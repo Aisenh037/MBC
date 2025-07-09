@@ -1,5 +1,5 @@
 ﻿import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import RequireAuth from './components/RequireAuth';
+import RequireAuth from './components/requireAuth';
 import LoginPage from './features/auth/loginpage';
 import AssignmentsPage from './features/assignments/AssignmentsPage';
 
