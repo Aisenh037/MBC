@@ -1,0 +1,9 @@
+﻿:root {
+  --primary-color: #3f51b5;
+  --error-color: #d32f2f;
+}
+
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+}

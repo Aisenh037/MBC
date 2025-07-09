@@ -1,0 +1,73 @@
+{
+  "name": "mbc-backend",
+  "version": "1.0.0",
+  "description": "Backend for MBC Department at NIT Bhopal",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev:backend": "node scripts/sync-backend-port.js"
+  },
+  "keywords": [
+    "MBC",
+    "NIT-Bhopal",
+    "Department-Management"
+  ],
+  "author": "Your Name <your.email@nitb.ac.in>",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "colors": "^1.4.0",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.1",
+    "express": "^4.18.2",
+    "express-fileupload": "^1.4.0",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^6.7.0",
+    "glob": "^11.0.1",
+    "helmet": "^7.1.0",
+    "hpp": "^0.2.3",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.0.3",
+    "morgan": "^1.10.0",
+    "nodemailer": "^6.9.8",
+    "papaparse": "^5.5.2",
+    "rimraf": "^6.0.1",
+    "superagent": "^10.2.0",
+    "winston": "^3.11.0",
+    "xss-clean": "^0.1.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.26.10",
+    "@babel/preset-env": "^7.26.9",
+    "@eslint/js": "^9.24.0",
+    "@types/jest": "^29.5.14",
+    "babel-jest": "^29.7.0",
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^16.0.0",
+    "jest": "^29.7.0",
+    "mongodb-memory-server": "^10.1.4",
+    "nodemon": "^3.1.0",
+    "supertest": "^6.3.4"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/tests/",
+      "/config/"
+    ],
+    "setupFilesAfterEnv": [
+      "./tests/setup.js"
+    ]
+  },
+  "directories": {
+    "test": "tests"
+  }
+}

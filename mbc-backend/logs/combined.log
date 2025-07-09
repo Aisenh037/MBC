@@ -1,0 +1,99 @@
+{"level":"warn","message":"⚠️ Port 5000 in use, trying 50001...","timestamp":"2025-04-10T20:49:45.002Z"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2025-04-10T20:49:45.008Z"}
+{"level":"info","message":"🚀 Server running on port 50001","timestamp":"2025-04-10T20:49:45.009Z"}
+{"level":"warn","message":"⚠️ Port 5000 in use, trying 50001...","timestamp":"2025-04-10T20:50:16.983Z"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2025-04-10T20:50:16.985Z"}
+{"level":"info","message":"🚀 Server running on port 50001","timestamp":"2025-04-10T20:50:16.986Z"}
+{"level":"info","message":"🚦 SIGINT received. Shutting down...","timestamp":"2025-04-10T20:51:15.782Z"}
+{"level":"warn","message":"⚠️ Port 5000 in use, trying 50001...","timestamp":"2025-04-10T20:51:19.568Z"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2025-04-10T20:51:19.571Z"}
+{"level":"info","message":"🚀 Server running on port 50001","timestamp":"2025-04-10T20:51:19.572Z"}
+{"level":"warn","message":"⚠️ Port 5000 in use, trying 50001...","timestamp":"2025-04-11T06:54:30.219Z"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2025-04-11T06:54:30.221Z"}
+{"level":"info","message":"🚀 Server running on port 50001","timestamp":"2025-04-11T06:54:30.221Z"}
+{"level":"warn","message":"⚠️ Port 5000 in use, trying 50001...","timestamp":"2025-04-11T06:56:53.397Z"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2025-04-11T06:56:53.399Z"}
+{"level":"info","message":"🚀 Server running on port 50001","timestamp":"2025-04-11T06:56:53.399Z"}
+{"level":"warn","message":"⚠️ Port 5000 in use, trying 50001...","timestamp":"2025-04-11T06:57:28.360Z"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2025-04-11T06:57:28.361Z"}
+{"level":"info","message":"🚀 Server running on port 50001","timestamp":"2025-04-11T06:57:28.362Z"}
+{"level":"info","message":"🚦 SIGINT received. Shutting down...","timestamp":"2025-04-11T18:26:50.258Z"}
+{"level":"warn","message":"⚠️ Port 5000 in use, trying 50001...","timestamp":"2025-04-11T18:26:55.390Z"}
+{"level":"info","message":"🚀 Server running on port 5000","timestamp":"2025-04-11T18:26:55.392Z"}
+{"level":"info","message":"🚀 Server running on port 50001","timestamp":"2025-04-11T18:26:55.393Z"}
+{"level":"info","message":"🚀 Server running in development mode on port 5000","timestamp":"2025-04-11T22:21:52.129Z"}
+{"level":"info","message":"🚀 Server running in development mode on port 5000","timestamp":"2025-04-11T22:24:03.876Z"}
+{"level":"info","message":"🚀 Server running in development mode on port 5000","timestamp":"2025-04-11T22:24:14.662Z"}
+{"level":"info","message":"🚀 Server running in development mode on port 5000","timestamp":"2025-04-11T22:24:25.416Z"}
+{"level":"info","message":"🚀 Server running in development mode on port 5000","timestamp":"2025-04-11T22:28:49.216Z"}
+{"level":"info","message":"🚀 Server running in development mode on port 5000","timestamp":"2025-04-11T22:33:39.883Z"}
+{"level":"info","message":"🚀 Server running in development mode on port 5000","timestamp":"2025-04-11T22:34:09.096Z"}
+{"level":"info","message":"🚀 Server running in development mode on port 5000","timestamp":"2025-04-11T22:34:51.284Z"}
+{"level":"info","message":"🚀 Server running in development mode on port 5000","timestamp":"2025-04-11T23:17:55.051Z"}
+{"level":"info","message":"🚀 Server running in development mode on port 5000","timestamp":"2025-04-12T18:30:25.724Z"}
+{"level":"info","message":"🚀 Server running in development mode on port 5000","timestamp":"2025-04-12T18:41:12.593Z"}
+{"level":"info","message":"🚀 Server running in development mode on port 5000","timestamp":"2025-04-12T18:56:41.637Z"}
+{"level":"info","message":"🚀 Server running in development mode on port 5000","timestamp":"2025-04-12T19:37:53.263Z"}
+{"level":"info","message":"🚀 Server running in development mode on port 5000","timestamp":"2025-04-12T19:51:49.732Z"}
+{"level":"info","message":"🚀 Server running in development mode on port 5000","timestamp":"2025-04-12T19:52:01.638Z"}
+{"level":"info","message":"🚦 SIGINT received. Shutting down...","timestamp":"2025-04-12T20:11:35.894Z"}
+{"level":"info","message":"🚀 Server running in development mode on port 5000","timestamp":"2025-04-12T20:11:44.262Z"}
+{"level":"info","message":"🚀 Server running in development mode on port 5000","timestamp":"2025-04-12T21:43:45.063Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-12T21:44:45.083Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-12T21:45:18.204Z"}
+{"level":"info","message":"🚦 SIGINT received. Gracefully shutting down...","timestamp":"2025-04-13T17:30:09.154Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-13T17:30:16.940Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-13T18:10:26.817Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-13T18:10:45.983Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-13T18:11:51.714Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-13T18:13:26.738Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-13T18:13:48.608Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-13T18:14:32.903Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-13T18:15:30.437Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-13T18:16:31.729Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-13T18:33:20.845Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-13T19:22:14.144Z"}
+{"level":"info","message":"🚦 SIGINT received. Gracefully shutting down...","timestamp":"2025-04-13T22:08:35.938Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-13T22:08:42.736Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-13T22:29:33.920Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-13T22:29:49.814Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-13T22:36:57.406Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-13T23:08:37.444Z"}
+{"level":"info","message":"🚦 SIGINT received. Gracefully shutting down...","timestamp":"2025-04-14T09:54:56.838Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-14T09:55:04.440Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-14T09:55:32.457Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-14T09:56:10.639Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-14T11:03:52.169Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-14T11:05:04.504Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-14T17:52:03.742Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-14T18:14:45.107Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-14T18:17:24.534Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-14T18:18:48.044Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-14T18:19:41.920Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-14T18:21:43.645Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-14T18:22:38.028Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-14T18:22:47.826Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-14T18:23:23.508Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-14T18:23:32.087Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-14T18:24:49.685Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-14T18:24:59.141Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-14T18:25:23.087Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-14T18:25:38.150Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-14T18:27:22.314Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-14T18:28:31.918Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-14T18:38:26.299Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-14T18:43:53.450Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-14T18:52:04.144Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-14T18:52:23.336Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-14T18:52:32.890Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-14T18:56:06.182Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-14T19:00:18.888Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-14T19:08:11.338Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-14T19:09:28.506Z"}
+{"level":"info","message":"🚦 SIGINT received. Gracefully shutting down...","timestamp":"2025-04-15T11:29:59.642Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-15T11:30:08.349Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-17T21:13:08.008Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-29T02:53:49.684Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-29T03:01:59.096Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-29T03:02:04.515Z"}
+{"level":"info","message":"🚀 Server running in development mode on http://localhost:5000","timestamp":"2025-04-29T03:05:32.028Z"}
