@@ -1,13 +1,14 @@
 import axios from 'axios'
 import { useAuthStore } from '../stores/authStore'
 
-const host = import.meta.env.VITE_API_HOST || 'http://localhost';
-const port = import.meta.env.VITE_API_PORT || '5000';
+// ✅ Use the correct base URL from `.env`
+// Should be like: VITE_API_URL=https://mbc-dept-management.onrender.com/api/v1
+const baseURL = import.meta.env.VITE_API_URL;
 
 // ✅ Axios instance with CORS credentials enabled
 const api = axios.create({
-  baseURL: `${host}:${port}/api`,
-  withCredentials: true, // 🔥 Crucial for cross-origin auth (cookies/tokens)
+  baseURL, // 🔥 Uses the proper backend URL
+  withCredentials: true, // Crucial for cross-origin auth
   headers: {
     "Content-Type": "application/json",
   },
