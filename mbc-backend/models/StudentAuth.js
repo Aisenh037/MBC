@@ -28,4 +28,4 @@ const StudentSchema = new mongoose.Schema({
 
 const Student = mongoose.model('Student', StudentSchema);
 
-export default Student;
+export default StudentAuth;
