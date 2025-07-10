@@ -1,9 +1,10 @@
 import axios from 'axios'
+import api from '../utils/api'; // Adjust the path as needed
 import { useAuthStore } from '../stores/authStore'
 
 // ✅ Use the correct base URL from `.env`
 // Should be like: VITE_API_URL=https://mbc-dept-management.onrender.com/api/v1
-const baseURL = import.meta.env.VITE_API_URL;
+const baseURL = import.meta.env.VITE_API_URL + '/api/v1';
 
 // ✅ Axios instance with CORS credentials enabled
 const api = axios.create({

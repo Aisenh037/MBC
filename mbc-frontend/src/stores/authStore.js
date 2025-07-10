@@ -8,23 +8,24 @@ export const useAuthStore = create((set) => ({
 
   // Login logic with enhanced error handling
   login: async (credentials) => {
-    set({ loading: true, error: null });
-    try {
-      const { data } = await axios.post('/api/v1/auth/login', credentials, {
-        withCredentials: true,
-        headers: { 'Content-Type': 'application/json' }
-      });
+  set({ loading: true, error: null });
+  try {
+    const { data } = await axios.post('/api/v1/auth/login', credentials, {
+      withCredentials: true,
+      headers: { 'Content-Type': 'application/json' }
+    });
 
-      const user = data?.user || data;
-      localStorage.setItem('user', JSON.stringify(user)); // Save user in localStorage
-      set({ user, loading: false });
-      return user;
-    } catch (err) {
-      const errorMsg = getErrorMessage(err);
-      set({ loading: false, error: errorMsg });
-      throw new Error(errorMsg);
-    }
-  },
+    const user = data?.user || data;
+    localStorage.setItem('user', JSON.stringify(user));
+    set({ user, loading: false });
+    return user;
+  } catch (err) {
+    const errorMsg = useAuthStore.getState().getErrorMessage(err); // ✅ Fix
+    set({ loading: false, error: errorMsg });
+    throw new Error(errorMsg);
+  }
+},
+
 
   // Logout logic with added cleanup
   logout: async () => {
