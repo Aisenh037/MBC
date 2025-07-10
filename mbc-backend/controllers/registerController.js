@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import Student from '../models/Student.js';
+import Student from '../models/student.js';
 import Teacher from '../models/professor.js';
 
 // @desc    Register new student
