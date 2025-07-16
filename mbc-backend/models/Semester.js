@@ -7,4 +7,7 @@ const SemesterSchema = new mongoose.Schema({
   students: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Student' }]
 }, { timestamps: true });
 
-export default mongoose.model('Semester', SemesterSchema);
+// Prevent model overwrite in development
+const Semester = mongoose.models.Semester || mongoose.model('Semester', SemesterSchema);
+
+export default Semester;

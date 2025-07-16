@@ -1,5 +1,5 @@
 import Branch from '../models/Branch.js';
-import Student from '../models/student.js';
+// import Student from '../models/student.js';
 import Semester from '../models/Semester.js';
 import Subject from '../models/Subject.js'; // Add this import
 import Hostel from '../models/Hostel.js';
