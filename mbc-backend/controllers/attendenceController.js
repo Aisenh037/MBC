@@ -1,4 +1,4 @@
-import Attendance from '../models/Attendance.js';
+import Attendance from '../models/Attendence.js';
 
 export const getAttendance = async (req, res) => {
   const { studentId, subjectId } = req.query;

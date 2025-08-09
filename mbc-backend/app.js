@@ -16,6 +16,7 @@ import assignmentRoutes from './routes/assignmentRoute.js';
 import marksRoutes from './routes/marksRoute.js';
 import path from "path";
 import noticeRoutes from './routes/noticeRoute.js';
+import attendanceRoutes from './routes/attendenceRoute.js';
 
 // Analytics and Dashboard routes
 import analyticsRoutes from './routes/analytics.js';
@@ -40,6 +41,7 @@ app.use('/api/students', studentRoutes);
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use('/api/assignments', assignmentRoutes);
 app.use('/api/marks', marksRoutes);
+app.use('/api/attendance', attendanceRoutes);
 
 // Notice route
 app.use('/api/notices', noticeRoutes);

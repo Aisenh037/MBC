@@ -1,7 +1,7 @@
 import Teacher from "../models/professor.js";
 import Assignment from "../models/Assignment.js";
 import Class from "../models/Course.js";
-import Student from "../models/Student.js";
+import Student from "../models/student.js";
 
 export const getTeacherDashboard = async (req, res) => {
   const userId = req.user.id;

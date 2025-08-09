@@ -1,4 +1,4 @@
-﻿import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 
 
@@ -17,8 +17,8 @@ import StudentDashboard from "./features/dashboard/Students/StudentDashboard";
 
 import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
-import Layout from "./components/layout/Layout";
-import RequireAuth from "./components/UI/RequireAuth";
+import Layout from "./components/layout/layout";
+import RequireAuth from "./components/UI/requireAuth";
 
 export default function App() {
   return (
