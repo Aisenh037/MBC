@@ -1,17 +1,38 @@
+// routes/usersRoute.js
 import express from 'express';
-import auth from '../middleware/auth.js';
-import requireRole from '../middleware/role.js';
+import {
+  getUsers,
+  getUser,
+  createUser,
+  updateUser,
+  deleteUser,
+  uploadUserPhoto
+} from '../controllers/usersController.js';
+import User from '../models/user.js';
+
+// Import Middleware
+import protect from '../middleware/auth.js';
+import requireRole from '../middleware/requireRole.js';
+import advancedResults from '../middleware/advancedResults.js'; // created this for filtering/pagination
 
 const router = express.Router();
 
-router.get('/admin-only', auth, requireRole('admin'), (req, res) => {
-  res.json({ message: 'Welcome, Admin!' });
-});
-router.get('/teacher-only', auth, requireRole('teacher'), (req, res) => {
-  res.json({ message: 'Welcome, Teacher!' });
-});
-router.get('/student-only', auth, requireRole('student'), (req, res) => {
-  res.json({ message: 'Welcome, Student!' });
-});
+// All routes below are protected
+router.use(protect);
+
+// Admin-only routes
+router.use(requireRole('admin'));
+
+router.route('/')
+  .get(advancedResults(User), getUsers)
+  .post(createUser);
+
+router.route('/:id')
+  .get(getUser)
+  .put(updateUser)
+  .delete(deleteUser);
+  
+router.route('/:id/photo')
+    .put(uploadUserPhoto);
 
 export default router;

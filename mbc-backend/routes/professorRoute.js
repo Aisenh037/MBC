@@ -1,3 +1,4 @@
+// routes/teachersRoute.js
 import express from "express";
 import {
   getTeachers,
@@ -5,14 +6,20 @@ import {
   updateTeacher,
   deleteTeacher
 } from "../controllers/professorController.js";
-import requireAuth from "../middleware/auth.js";
+import protect from "../middleware/auth.js";
 import requireRole from "../middleware/requireRole.js";
 
 const router = express.Router();
 
-router.get("/", requireAuth, requireRole(["admin"]), getTeachers);
-router.post("/", requireAuth, requireRole(["admin"]), addTeacher);
-router.put("/:id", requireAuth, requireRole(["admin"]), updateTeacher);
-router.delete("/:id", requireAuth, requireRole(["admin"]), deleteTeacher);
+router.use(protect);
+router.use(requireRole('admin')); // Only admins can manage teacher records
+
+router.route('/')
+  .get(getTeachers)
+  .post(addTeacher);
+  
+router.route('/:id')
+  .put(updateTeacher)
+  .delete(deleteTeacher);
 
 export default router;

@@ -1,10 +1,12 @@
 import mongoose from 'mongoose';
 
-const facilitySchema = new mongoose.Schema({
+const branchSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, 'Please add facility name'],
+    enum: ['MDS', 'Agile', 'Bioinformatics', 'PhD', 'MCA'],
+    required: [true, 'Please add a Branch name'],
     unique: true,
+    trim: true,
   },
   description: {
     type: String,
@@ -15,7 +17,7 @@ const facilitySchema = new mongoose.Schema({
   },
   department: {
     type: String,
-    enum: ['MDS', 'Agile', 'Bioinformatics', 'PhD', 'MCA', 'common'],
+    enum: ['MBC BTech', 'MBC MTech', 'MBC PhD', ' MBC MCA'],
     required: true,
   },
   available: {
@@ -27,6 +29,7 @@ const facilitySchema = new mongoose.Schema({
       user: {
         type: mongoose.Schema.ObjectId,
         ref: 'User',
+        required: true,
       },
       date: {
         type: Date,
@@ -57,6 +60,6 @@ const facilitySchema = new mongoose.Schema({
   },
 });
 
-const Facility = mongoose.model('Facility', facilitySchema);
+const Branch = mongoose.model('Branch', branchSchema);
 
-export default Facility;
+export default Branch;

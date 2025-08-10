@@ -1,3 +1,4 @@
+// routes/assignmentRoute.js
 import express from "express";
 import {
   getAssignments,
@@ -7,21 +8,22 @@ import {
   submitAssignment,
   gradeSubmission
 } from "../controllers/assignmentController.js";
-import requireAuth from "../middleware/auth.js";
+import protect from "../middleware/auth.js";
 import requireRole from "../middleware/requireRole.js";
 
 const router = express.Router();
 
-// Teachers: CRUD assignments
-router.get("/", requireAuth, getAssignments);
-router.post("/", requireAuth, requireRole(["teacher"]), addAssignment);
-router.put("/:id", requireAuth, requireRole(["teacher"]), updateAssignment);
-router.delete("/:id", requireAuth, requireRole(["teacher"]), deleteAssignment);
+router.use(protect);
 
-// Students: submit assignment
-router.post("/:id/submit", requireAuth, requireRole(["student"]), submitAssignment);
+router.route('/')
+    .get(getAssignments)
+    .post(requireRole('teacher'), addAssignment);
 
-// Teachers: grade submission
-router.post("/:id/grade/:submissionId", requireAuth, requireRole(["teacher"]), gradeSubmission);
+router.route('/:id')
+    .put(requireRole('teacher'), updateAssignment)
+    .delete(requireRole('teacher'), deleteAssignment);
+
+router.post("/:id/submit", requireRole('student'), submitAssignment);
+router.post("/:id/grade/:submissionId", requireRole('teacher'), gradeSubmission);
 
 export default router;

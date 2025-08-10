@@ -1,13 +1,22 @@
+// models/Semester.js
 import mongoose from 'mongoose';
 
 const SemesterSchema = new mongoose.Schema({
-  number: { type: Number, required: true },
-  current: { type: Boolean, default: false },
-  branch: { type: mongoose.Schema.Types.ObjectId, ref: 'Branch', required: true },
-  students: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Student' }]
+  number: { 
+    type: Number, 
+    required: true,
+    min: 1,
+    max: 8  
+  },
+  branch: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Branch', 
+    required: true 
+  },
+  // You might not need to store students in the semester model
+  // as you can query students by branch and currentSemester.
+  // This avoids data duplication.
+  // students: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Student' }]
 }, { timestamps: true });
 
-// Prevent model overwrite in development
-const Semester = mongoose.models.Semester || mongoose.model('Semester', SemesterSchema);
-
-export default Semester;
+export default mongoose.models.Semester || mongoose.model('Semester', SemesterSchema);

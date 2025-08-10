@@ -1,22 +1,24 @@
+// controllers/studentController.js
 import Student from '../models/student.js';
 import User from '../models/user.js';
-import bcrypt from 'bcryptjs';
+import asyncHandler from '../middleware/asyncHandler.js';
+import ErrorResponse from '../utils/errorResponse.js';
 
-export const getStudents = async (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 20;
-  const students = await Student.find()
-    .populate('user')
-    .skip((page - 1) * limit)
-    .limit(limit)
-    .lean();
-  res.json(students);
-};
 
-export const addStudent = async (req, res) => {
+export const getStudents = asyncHandler(async (req, res, next) => {
+  res.status(200).json(res.advancedResults);  
+});
+
+export const addStudent = asyncHandler(async (req, res, next) => {
   const { name, email, password, scholarNo } = req.body;
-  const hash = await bcrypt.hash(password, 10);
-  const user = await User.create({ name, email, password: hash, role: "student" });
+
+  // Checking user with that email already exists
+  const userExists = await User.findOne({ email });
+  if (userExists) {
+    return next(new ErrorResponse('A user with this email already exists', 400));
+  }
+
+  const user = await User.create({ name, email, password, role: "student" });
   const student = await Student.create({ user: user._id, scholarNo });
-  res.status(201).json({ message: "Student created", student });
-};
+  res.status(201).json({ success: true, message: "Student created", data: student });
+});

@@ -1,10 +1,16 @@
-// npm install joi
-import Joi from 'joi';
+// middleware/validation.js
+import ErrorResponse from '../utils/errorResponse.js';
 
 export const validate = (schema) => (req, res, next) => {
-  const { error } = schema.validate(req.body);
+  const { error } = schema.validate(req.body, {
+    abortEarly: false,  
+    allowUnknown: true,  
+  });
+  
   if (error) {
-    return res.status(400).json({ error: error.details[0].message });
+    const errorMessage = error.details.map(detail => detail.message).join(', ');
+    return next(new ErrorResponse(errorMessage, 400));
   }
+  
   next();
 };

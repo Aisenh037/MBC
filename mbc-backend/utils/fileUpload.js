@@ -1,61 +1,51 @@
-import multer from "multer";
-import path from "path";
-import fs from "fs";
+// utils/fileUpload.js
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
+import ErrorResponse from './errorResponse.js';
 
-// Set destination and filename
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const dir = "./uploads/assignments";
-    fs.mkdirSync(dir, { recursive: true });
-    cb(null, dir);
-  },
-  filename: function (req, file, cb) {
-    const ext = path.extname(file.originalname);
-    cb(null, Date.now() + "_" + file.fieldname + ext);
-  }
-});
-
-const upload = multer({
-  storage,
-  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
-  fileFilter: (req, file, cb) => {
-    // Accept PDFs, docs, images (customize as needed)
-    if (
-      file.mimetype.startsWith("application/") ||
-      file.mimetype.startsWith("image/")
-    ) {
-      cb(null, true);
-    } else {
-      cb(new Error("Invalid file type"));
-    }
-  }
-});
-
-export default upload;
-
-
-export const uploadFile = (req, res) => {
-  upload.single("file")(req, res, (err) => {
-    if (err) {
-      return res.status(400).json({ error: err.message });
-    }
-    if (!req.file) {
-      return res.status(400).json({ error: "No file uploaded" });
-    }
-    res.json({ filePath: req.file.path });
+/**
+ * Factory function to create a multer upload instance for a specific destination.
+ * @param {string} destinationSubfolder - The subfolder within './public/uploads'
+ * @returns {multer.Instance}
+ */
+const createUploader = (destinationSubfolder) => {
+  const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      const dir = path.join('./public/uploads', destinationSubfolder);
+      // Create directory if it doesn't exist
+      fs.mkdirSync(dir, { recursive: true });
+      cb(null, dir);
+    },
+    filename: (req, file, cb) => {
+      // Create a unique filename to avoid overwrites
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      const extension = path.extname(file.originalname);
+      cb(null, file.fieldname + '-' + uniqueSuffix + extension);
+    },
   });
-}
 
+  const fileFilter = (req, file, cb) => {
+    // Define allowed file types
+    const allowedTypes = /jpeg|jpg|png|gif|pdf|doc|docx|ppt|pptx/;
+    const mimetype = allowedTypes.test(file.mimetype);
+    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
 
-export const uploadMultipleFiles = (req, res) => {
-  upload.array("files", 10)(req, res, (err) => {
-    if (err) {
-      return res.status(400).json({ error: err.message });
+    if (mimetype && extname) {
+      return cb(null, true);
     }
-    if (!req.files || req.files.length === 0) {
-      return res.status(400).json({ error: "No files uploaded" });
-    }
-    const filePaths = req.files.map(file => file.path);
-    res.json({ filePaths });
+    cb(new ErrorResponse('Error: File type not allowed!', 400));
+  };
+
+  return multer({
+    storage,
+    limits: { fileSize: 20 * 1024 * 1024 }, // 20MB limit
+    fileFilter,
   });
-}
+};
+
+// Export configured middleware instead of controller functions
+export const uploadProfilePhoto = createUploader('profiles').single('profilePhoto');
+export const uploadAssignmentFile = createUploader('assignments').single('assignmentFile');
+export const uploadSubmissionFile = createUploader('submissions').single('submissionFile');
+export const uploadGalleryImages = createUploader('gallery').array('images', 10);

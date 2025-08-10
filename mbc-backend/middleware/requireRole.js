@@ -1,8 +1,19 @@
-export default function (roles) {
+// middleware/requireRole.js
+import ErrorResponse from '../utils/errorResponse.js';
+
+const requireRole = (...roles) => {
   return (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
-      return res.status(403).json({ error: "Forbidden" });
+    // Check that req.user exists before checking the role.
+    if (!req.user || !roles.includes(req.user.role)) {
+      return next(
+        new ErrorResponse(
+          `User role '${req.user?.role}' is not authorized to access this route`,
+          403
+        )
+      );
     }
     next();
   };
-}
+};
+
+export default requireRole;

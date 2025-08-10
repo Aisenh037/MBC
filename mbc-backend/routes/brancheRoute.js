@@ -1,17 +1,22 @@
+// routes/branchRoute.js
 import express from 'express';
 import {
   getBranches,
   createBranch,
   updateBranch,
   deleteBranch,
-  getBranchDetails,
   getBranchSemesters,
   getBranchSubjects,
   getBranchStudents,
   importStudents
 } from '../controllers/branchController.js';
+import protect from '../middleware/auth.js';
+import requireRole from '../middleware/requireRole.js';
 
 const router = express.Router();
+
+router.use(protect);
+router.use(requireRole('admin')); // All branch operations are admin-only
 
 router.route('/')
   .get(getBranches)
@@ -21,16 +26,9 @@ router.route('/:id')
   .put(updateBranch)
   .delete(deleteBranch);
 
-router.route('/:id/semesters')
-  .get(getBranchSemesters);
-
-router.route('/:id/subjects')
-  .get(getBranchSubjects);
-
-router.route('/:id/students')
-  .get(getBranchStudents);
-
-router.route('/:id/students/import')
-  .post(importStudents);
+router.get('/:id/semesters', getBranchSemesters);
+router.get('/:id/subjects', getBranchSubjects);
+router.get('/:id/students', getBranchStudents);
+router.post('/:id/students/import', importStudents);
 
 export default router;

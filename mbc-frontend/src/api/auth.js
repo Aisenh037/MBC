@@ -1,6 +1,34 @@
-import api from './axios'
+// src/services/auth.js
+import api from './axios';
 
-export const login = async (email, password) => {
-    const response = await api.post("/auth/login", { email, password });
-    return response.data;
-  };
+/**
+ * Logs in a user.
+ * @param {string} email
+ * @param {string} password
+ * @returns {Promise<object>} The user data and token.
+ */
+export const login = async (credentials) => {
+  const { data } = await api.post('/auth/login', credentials);
+  return data;
+};
+
+/**
+ * Registers a new user.
+ * @param {object} userData - { name, email, password, role, scholarNo?, employeeId? }
+ * @returns {Promise<object>}
+ */
+export const register = async (userData) => {
+  const { data } = await api.post('/auth/register', userData);
+  return data;
+};
+
+/**
+ * Fetches the currently logged-in user's profile.
+ * @returns {Promise<object>} The user's data.
+ */
+export const getProfile = async () => {
+    // Note: You would need a '/auth/me' or '/users/me' endpoint on your backend for this.
+    // Let's assume you have one at '/users/me'.
+    const { data } = await api.get('/users/me'); 
+    return data;
+};

@@ -1,21 +1,26 @@
+// controllers/attendenceController.js
 import Attendance from '../models/Attendence.js';
+import asyncHandler from '../middleware/asyncHandler.js';
+import ErrorResponse from '../utils/errorResponse.js';
 
-export const getAttendance = async (req, res) => {
+
+export const getAttendance = asyncHandler(async (req, res, next) => {
   const { studentId, subjectId } = req.query;
   let query = {};
   if (studentId) query.student = studentId;
   if (subjectId) query.subject = subjectId;
-  const attendance = await Attendance.find(query).populate('student').populate('subject').populate('faculty');
-  res.json(attendance);
-};
+  const attendance = await Attendance.find(query).populate('student subject faculty');
+  res.status(200).json({ success: true, count: attendance.length, data: attendance });
+});
 
-export const markAttendance = async (req, res) => {
-  const { student, subject, date, status, faculty } = req.body;
-  // Upsert: if record exists for (student, subject, date), update, else create
+export const markAttendance = asyncHandler(async (req, res, next) => {
+  const { student, subject, date, status } = req.body;
+  req.body.faculty = req.user.id;  
+
   const attendance = await Attendance.findOneAndUpdate(
     { student, subject, date },
-    { status, faculty },
-    { new: true, upsert: true }
+    { status, faculty: req.body.faculty },
+    { new: true, upsert: true, runValidators: true }
   );
-  res.json(attendance);
-};
+  res.status(200).json({ success: true, data: attendance });
+});

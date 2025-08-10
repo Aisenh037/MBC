@@ -1,21 +1,17 @@
+// utils/logger.js
 import winston from 'winston';
+import 'winston-daily-rotate-file'; // For log rotation
 
 const { combine, timestamp, printf, colorize, json } = winston.format;
 
-/**
- * Custom log format for console
- */
 const consoleFormat = printf(({ level, message, timestamp, ...metadata }) => {
   let msg = `${timestamp} [${level}]: ${message}`;
   if (Object.keys(metadata).length) {
-    msg += `\n${JSON.stringify(metadata, null, 2)}`;
+    msg += ` ${JSON.stringify(metadata)}`;
   }
   return msg;
 });
 
-/**
- * Winston logger instance
- */
 const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || 'info',
   transports: [
@@ -25,21 +21,32 @@ const logger = winston.createLogger({
         timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
         consoleFormat
       ),
-      handleExceptions: true
+      handleExceptions: true,
     }),
-    new winston.transports.File({
-      filename: 'logs/combined.log',
+    //  Separate transport for error logs
+    new winston.transports.DailyRotateFile({
+      filename: 'logs/error-%DATE%.log',
+      level: 'error',
       format: combine(timestamp(), json()),
-      maxsize: 5242880, // 5MB
-      maxFiles: 5
+      datePattern: 'YYYY-MM-DD',
+      zippedArchive: true,
+      maxSize: '20m',
+      maxFiles: '14d'
+    }),
+    new winston.transports.DailyRotateFile({
+      filename: 'logs/combined-%DATE%.log',
+      format: combine(timestamp(), json()),
+      datePattern: 'YYYY-MM-DD',
+      zippedArchive: true,
+      maxSize: '20m',
+      maxFiles: '14d'
     })
   ],
-  exitOnError: false
+  exitOnError: false,
 });
 
-// Morgan stream for HTTP request logging
 logger.stream = {
-  write: message => logger.info(message.trim())
+  write: message => logger.info(message.trim()),
 };
 
 export default logger;

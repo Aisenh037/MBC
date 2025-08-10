@@ -1,24 +1,26 @@
+// routes/subjectRoute.js
 import express from 'express';
-import Subject from '../models/Subject.js';
+import {
+  getAllSubjects,
+  getSubjectById,
+  createSubject,
+  updateSubject,
+  deleteSubject
+} from '../controllers/subjectController.js';
+import protect from '../middleware/auth.js';
+import requireRole from '../middleware/requireRole.js';
 
 const router = express.Router();
 
-// Get all subjects
-router.get('/', async (req, res) => {
-  try {
-    const subjects = await Subject.find().populate('branch');
-    res.status(200).json({
-      success: true,
-      count: subjects.length,
-      data: subjects
-    });
-  } catch (err) {
-    console.error('Error fetching subjects:', err);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch subjects'
-    });
-  }
-});
+router.use(protect);
+
+// Admins and teachers can see subjects
+router.get('/', requireRole('admin', 'teacher'), getAllSubjects);
+router.get('/:id', requireRole('admin', 'teacher'), getSubjectById);
+
+// Only admins can create, update, or delete subjects
+router.post('/', requireRole('admin'), createSubject);
+router.put('/:id', requireRole('admin'), updateSubject);
+router.delete('/:id', requireRole('admin'), deleteSubject);
 
 export default router;
