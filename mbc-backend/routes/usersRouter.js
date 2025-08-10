@@ -1,6 +1,7 @@
 // routes/usersRoute.js
 import express from 'express';
 import {
+  getMe,
   getUsers,
   getUser,
   createUser,
@@ -19,6 +20,9 @@ const router = express.Router();
 
 // All routes below are protected
 router.use(protect);
+
+// Current user profile
+router.get('/me', getMe);
 
 // Admin-only routes
 router.use(requireRole('admin'));

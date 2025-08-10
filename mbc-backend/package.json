@@ -4,8 +4,11 @@
   "description": "Backend for MBC Department at NIT Bhopal",
   "main": "index.js",
   "type": "module",
+  "engines": {
+    "node": ">=18.17.0"
+  },
   "scripts": {
-    "start": "node index.js",
+    "start": "NODE_ENV=production node index.js",
     "dev": "nodemon index.js",
     "test": "jest --watchAll --detectOpenHandles",
     "lint": "eslint . --ext .js"

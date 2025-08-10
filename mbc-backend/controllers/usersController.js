@@ -4,6 +4,16 @@ import User from '../models/user.js';
 import ErrorResponse from '../utils/errorResponse.js';
 import asyncHandler from '../middleware/asyncHandler.js';
 
+// @desc    Get current logged in user
+// @route   GET /api/v1/users/me
+export const getMe = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user.id);
+  if (!user) {
+    return next(new ErrorResponse('User not found', 404));
+  }
+  res.status(200).json({ success: true, data: user });
+});
+
 // @desc    Get all users
 // @route   GET /api/v1/users
 export const getUsers = asyncHandler(async (req, res, next) => {
@@ -90,7 +100,7 @@ export const deleteUser = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse(`Creator accounts cannot be deleted`, 403));
   }
 
-  await user.remove();
+  await User.findByIdAndDelete(req.params.id);
   res.status(200).json({ success: true, data: {} });
 });
 

@@ -1,5 +1,5 @@
 // src/services/professor.js
-import api from './axios';
+import api from './axiosInstance';
 
 /**
  * Fetches all teachers (for admins).

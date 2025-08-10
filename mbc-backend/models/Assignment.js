@@ -6,7 +6,7 @@ const assignmentSchema = new mongoose.Schema({
   description: String,
   subject: { type: mongoose.Schema.Types.ObjectId, ref: 'Subject', required: true },
   class: { type: mongoose.Schema.Types.ObjectId, ref: 'Class', required: true },
-  teacher: { type: mongoose.Schema.Types.ObjectId, ref: 'Teacher', required: true },
+  teacher: { type: mongoose.Schema.Types.ObjectId, ref: 'Professor', required: true },
   dueDate: { type: Date, required: true },
   file: String,  
   submissions: [

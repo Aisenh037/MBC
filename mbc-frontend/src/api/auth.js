@@ -1,5 +1,5 @@
 // src/services/auth.js
-import api from './axios';
+import api from './axiosInstance';
 
 /**
  * Logs in a user.
@@ -27,8 +27,6 @@ export const register = async (userData) => {
  * @returns {Promise<object>} The user's data.
  */
 export const getProfile = async () => {
-    // Note: You would need a '/auth/me' or '/users/me' endpoint on your backend for this.
-    // Let's assume you have one at '/users/me'.
     const { data } = await api.get('/users/me'); 
     return data;
 };

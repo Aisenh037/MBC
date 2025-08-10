@@ -1,5 +1,5 @@
 // src/services/notice.js
-import api from './axios';
+import api from './axiosInstance';
 
 /**
  * Fetches a list of notices, with optional filtering.

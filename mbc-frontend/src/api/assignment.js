@@ -1,5 +1,5 @@
 // src/services/assignment.js
-import api from './axios';
+import api from './axiosInstance';
 
 // --- Teacher & Admin Actions ---
 export const getAssignments = (params) => api.get('/assignments', { params });

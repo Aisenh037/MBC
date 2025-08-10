@@ -13,14 +13,14 @@ export const getTeachers = asyncHandler(async (req, res, next) => {
 
 export const addTeacher = asyncHandler(async (req, res, next) => {
   const { name, email, password, employeeId, department } = req.body;
-  const user = await User.create({ name, email, password, role: "teacher" });
+  const user = await User.create({ name, email, password, role: "professor" });
   const teacher = await Teacher.create({ user: user._id, employeeId, department });
   res.status(201).json({ success: true, message: "Teacher created", data: teacher });
 });
 
 export const updateTeacher = asyncHandler(async (req, res, next) => {
   const { name, email, employeeId, department } = req.body;
-  const teacher = await Teacher.findById(req.params.id).populate('user');
+  const teacher = await Teacher.findById(req.params.id).populate('user'); // TODO: rename variables to professor consistently
   if (!teacher) {
     return next(new ErrorResponse(`Teacher not found with id ${req.params.id}`, 404));
   }

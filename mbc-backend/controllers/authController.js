@@ -9,6 +9,11 @@ import ErrorResponse from '../utils/errorResponse.js';
 // @route   POST /api/v1/auth/register
 export const register = asyncHandler(async (req, res, next) => {
   const { name, email, password, role } = req.body;
+  const userExists = await User.findOne({ email });
+  if (userExists) {
+    return next(new ErrorResponse('Email already in use', 400));
+  }
+
   const user = await User.create({ name, email, password, role });
 
   const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
@@ -32,13 +37,22 @@ export const login = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('Invalid credentials', 401));
   }
 
-  const isMatch = await bcrypt.compare(password, user.password);
+  const isMatch = await user.matchPassword(password);
   if (!isMatch) {
     return next(new ErrorResponse('Invalid credentials', 401));
   }
 
   const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
     expiresIn: '1d'
+  });
+
+  // Optionally set cookie for web clients
+  const isProduction = process.env.NODE_ENV === 'production';
+  res.cookie('token', token, {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
+    maxAge: 24 * 60 * 60 * 1000,
   });
 
   res.status(200).json({

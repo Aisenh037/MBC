@@ -1,5 +1,5 @@
 // src/services/semester.js
-import api from './axios';
+import api from './axiosInstance';
 
 /**
  * Fetches all semesters for a specific branch.

@@ -6,6 +6,6 @@ import requireRole from "../middleware/requireRole.js";
 
 const router = express.Router();
 
-router.get("/", protect, requireRole('teacher'), getTeacherDashboard);
+router.get("/", protect, requireRole('professor'), getTeacherDashboard);
 
 export default router;

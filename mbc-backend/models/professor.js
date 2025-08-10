@@ -1,7 +1,7 @@
 // models/professor.js
 import mongoose from 'mongoose';
 
-const teacherSchema = new mongoose.Schema({
+const professorSchema = new mongoose.Schema({
   user: { 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'User', 

@@ -29,7 +29,7 @@ export default function Login() {
     // If a user is already logged in, redirect them from the login page
     if (user) {
       if (user.role === "admin") navigate("/admin");
-      else if (user.role === "teacher") navigate("/teacher");
+      else if (user.role === "professor") navigate("/teacher");
       else if (user.role === "student") navigate("/student");
       else navigate("/"); // Fallback
     }

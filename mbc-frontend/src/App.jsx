@@ -2,23 +2,23 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 
 
-import AdminDashboard from "./features/dashboard/admin/AdminDashboard";
-import AdminStudents from "./features/dashboard/admin/StudentManagement";
-import AdminTeachers from "./features/dashboard/admin/ProfessorManagement";
-import AdminBranches from "./features/dashboard/admin/BranchManagement";
-import AdminNotices from "./features/dashboard/admin/NoticeManagement";
+import AdminDashboard from "./features/admin/dashboard/admin/AdminDashboard";
+import AdminStudents from "./features/admin/dashboard/admin/StudentManagement";
+import AdminTeachers from "./features/admin/dashboard/admin/ProfessorManagement";
+import AdminBranches from "./features/admin/dashboard/admin/BranchManagement";
+import AdminNotices from "./features/admin/dashboard/admin/NoticeManagement";
 
 
-import TeacherDashboard from "./features/dashboard/Professors/ProfessorDashboard";
+import TeacherDashboard from "./features/professors/dashboard/Professors/ProfessorDashboard";
 
 
-import StudentDashboard from "./features/dashboard/Students/StudentDashboard";
+import StudentDashboard from "./features/students/dashboard/Students/StudentDashboard";
 
 
 import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
 import Layout from "./components/layout/layout";
-import RequireAuth from "./components/UI/requireAuth";
+import ProtectedRoute from "./components/UI/ProtectedRoute";
 
 export default function App() {
   return (
@@ -30,7 +30,7 @@ export default function App() {
         {/* Shared Layout */}
         <Route element={<Layout />}>
           {/* Admin Routes */}
-          <Route element={<RequireAuth allowedRoles={["admin"]} />}>
+          <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
             <Route path="/admin" element={<AdminDashboard />}>
               <Route path="students" element={<AdminStudents />} />
               <Route path="teachers" element={<AdminTeachers />} />
@@ -40,7 +40,7 @@ export default function App() {
           </Route>
 
           {/* Teacher Route */}
-          <Route element={<RequireAuth allowedRoles={["teacher"]} />}>
+          <Route element={<ProtectedRoute allowedRoles={["professor"]} />}>
             <Route path="/teacher" element={<TeacherDashboard />} />
           </Route>
 

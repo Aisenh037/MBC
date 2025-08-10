@@ -1,5 +1,5 @@
 // src/api/analytics.js
-import api from './axios';
+import api from './axiosInstance';
 
 /**
  * Fetches the main analytics data for the admin dashboard.

@@ -1,0 +1,54 @@
+services:
+  - type: web
+    name: mbc-backend
+    env: node
+    plan: free
+    autoDeploy: true
+    buildCommand: cd mbc-backend && npm ci
+    startCommand: cd mbc-backend && npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        sync: false
+      - key: MONGO_URI
+        sync: false
+      - key: CORS_ORIGIN
+        # Set to your frontend URL once deployed, e.g., https://mbc-frontend.onrender.com
+        value: ""
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: USE_IN_MEMORY_DB
+        value: "false"
+      - key: LOG_LEVEL
+        value: info
+    disks:
+      - name: uploads
+        mountPath: /opt/render/project/src/mbc-backend/public/uploads
+        sizeGB: 1
+
+  - type: static_site
+    name: mbc-frontend
+    plan: free
+    rootDir: mbc-frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    routes:
+      # Proxy API requests to backend
+      - type: proxy
+        source: /api/*
+        destination: https://mbc-backend.onrender.com
+      - type: proxy
+        source: /uploads/*
+        destination: https://mbc-backend.onrender.com
+      # SPA fallback
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        # When the backend is deployed, set this to the backend URL, e.g., https://mbc-backend.onrender.com
+        value: ""

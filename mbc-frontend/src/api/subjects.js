@@ -1,5 +1,5 @@
 // src/services/subjects.js
-import api from './axios';
+import api from './axiosInstance';
 
 /**
  * Fetches all subjects from the database.

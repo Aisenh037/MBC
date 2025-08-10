@@ -11,7 +11,7 @@ const router = express.Router();
 router.use(protect);
 
 router.route('/')
-    .get(requireRole('admin', 'teacher'), advancedResults(Student, 'user'), getStudents)
+    .get(requireRole('admin', 'professor'), advancedResults(Student, 'user'), getStudents)
     .post(requireRole('admin'), addStudent);
 
 export default router;
