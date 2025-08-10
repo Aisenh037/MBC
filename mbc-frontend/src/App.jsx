@@ -8,7 +8,7 @@ import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
 
 // Layouts & Protected Routes
-import Layout from "./components/Layout/layout";
+import Layout from "./components/Layout/layout.jsx";
 import ProtectedRoute from "./components/Layout/ProtectedRoute";
 import AdminLayout from "./features/admin/AdminLayout"; // A new layout for the admin section
 
