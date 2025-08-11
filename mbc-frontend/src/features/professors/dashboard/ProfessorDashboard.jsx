@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Typography, Grid, Paper, List, ListItem, ListItemText, Divider } from '@mui/material';
 import { useAuthStore } from '../../../stores/authStore';
 import { useNotify } from '../../../components/UI/NotificationProvider';
-import { getTeacherDashboardData } from '../../../services/professor';
+import { getTeacherDashboardData } from '../../../api/professor';
 import StatCard from '../../../components/UI/StatCard';
 import LoadingSpinner from '../../../components/UI/LoadingSpinner';
 

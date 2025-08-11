@@ -1,7 +1,7 @@
 ﻿// src/stores/authStore.js
 import { create } from "zustand";
 import { persist } from 'zustand/middleware';
-import api from "../services/axios"; // ✨ Use the central API service
+import api from "../api/axios"; // ✨ Use the central API service
 
 // We use persist middleware to automatically save auth state to localStorage
 export const useAuthStore = create(

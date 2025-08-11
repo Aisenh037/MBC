@@ -1,9 +1,10 @@
 // src/features/admin/AdminLayout.jsx
 import React from 'react';
 import { Box } from '@mui/material';
-import AdminSidebar from '../../components/Layout/AdminSidebar';
-import AdminHeader from '../../components/Layout/AdminHeader';
 import { Outlet } from 'react-router-dom';
+// ✨ CORRECTED PATHS: These shared components are outside the 'features' folder
+import AdminSidebar from './AdminSidebar';
+import AdminHeader from './AdminHeader';
 
 const drawerWidth = 240;
 
@@ -22,7 +23,7 @@ export default function AdminLayout() {
       >
         <Box sx={{ p: 3 }}>
           <AdminHeader />
-          {/* All nested admin routes will render here */}
+          {/* All nested admin pages (like BranchManagement) will render here */}
           <Outlet />
         </Box>
       </Box>

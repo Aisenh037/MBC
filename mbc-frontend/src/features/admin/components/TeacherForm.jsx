@@ -4,8 +4,8 @@ import {
   DialogTitle, DialogContent, DialogActions, Button,
   TextField, Grid, CircularProgress,
 } from '@mui/material';
-import { useNotify } from '../../../../components/UI/NotificationProvider';
-import { addTeacher, updateTeacher } from '../../../../services/professor';
+import { useNotify } from '../../../components/UI/NotificationProvider.jsx';
+import { addTeacher, updateTeacher } from '../../../hooks/useTeachers.js';
 
 export default function TeacherForm({ editingTeacher, onClose, onSave }) {
   const [form, setForm] = useState({

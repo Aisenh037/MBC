@@ -1,8 +1,4 @@
 // src/api/analytics.js
-import api from './axiosInstance';
+import api from './axios.js';
 
-/**
- * Fetches the main analytics data for the admin dashboard.
- * @returns {Promise<object>}
- */
 export const getAnalyticsData = () => api.get('/analytics');

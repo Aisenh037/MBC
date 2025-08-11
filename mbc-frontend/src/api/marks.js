@@ -1,5 +1,5 @@
-// src/services/marks.js
-import api from './axiosInstance';
+// src/api/marks.js
+import api from './axios.js';
 
 export const getMarks = (params) => api.get('/marks', { params });
 export const addMark = (markData) => api.post('/marks', markData);

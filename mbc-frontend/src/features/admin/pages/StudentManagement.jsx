@@ -7,11 +7,11 @@ import {
   Grid, IconButton, CircularProgress
 } from "@mui/material";
 import { Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon, CloudUpload as UploadIcon } from "@mui/icons-material";
-import { useNotify } from '../../../../components/UI/NotificationProvider';
+import { useNotify } from '../../../components/UI/NotificationProvider';
 
 // ✨ Use central API services
-import { getStudents, addStudent, updateStudent, deleteStudent } from '../../../../services/student';
-import { getBranches } from '../../../../services/branch';
+import { getStudents, addStudent, updateStudent, deleteStudent } from '../../../../src/api/student.js';
+import { getBranches } from '../../../../src/api/branch.js';
 
 // Add/Edit Student Dialog Component
 const StudentFormDialog = ({ open, onClose, editingStudent, branches, onSave }) => {
