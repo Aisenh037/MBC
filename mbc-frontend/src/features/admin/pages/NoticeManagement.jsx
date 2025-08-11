@@ -9,7 +9,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 import { useNotify } from '../../../components/UI/NotificationProvider.jsx';
 import NoticeForm from '../components/NoticeForm.jsx'; 
-import { useNotices, useDeleteNotice } from '../../../hooks/useBranches.js';
+import { useNotices, useDeleteNotice } from '@/hooks/useNotices.js';
 
 export default function NoticeManagement() {
   const [dialogOpen, setDialogOpen] = useState(false);

@@ -27,7 +27,6 @@ export default defineConfig(({ mode }) => {
           target: env.VITE_API_URL, // Set in .env
           changeOrigin: true,
           secure: false,
-          rewrite: (p) => p.replace(/^\/api/, ''), // Remove "/api" before sending to backend
         },
         '/uploads': {
           target: env.VITE_API_URL,
