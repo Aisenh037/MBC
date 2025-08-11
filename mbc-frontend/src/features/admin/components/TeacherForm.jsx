@@ -5,7 +5,7 @@ import {
   TextField, Grid, CircularProgress,
 } from '@mui/material';
 import { useNotify } from '../../../components/UI/NotificationProvider.jsx';
-import { addTeacher, updateTeacher } from '../../../hooks/useTeachers.js';
+import { useAddTeacher, useUpdateTeacher } from '@/hooks/useTeachers.js';
 
 export default function TeacherForm({ editingTeacher, onClose, onSave }) {
   const [form, setForm] = useState({
@@ -36,6 +36,9 @@ export default function TeacherForm({ editingTeacher, onClose, onSave }) {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const addTeacherMutation = useAddTeacher();
+  const updateTeacherMutation = useUpdateTeacher();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -46,10 +49,10 @@ export default function TeacherForm({ editingTeacher, onClose, onSave }) {
       }
       
       if (editingTeacher) {
-        await updateTeacher(editingTeacher._id, payload);
+        await updateTeacherMutation.mutateAsync({ id: editingTeacher._id, data: payload });
         notify('Teacher updated successfully', 'success');
       } else {
-        await addTeacher(payload);
+        await addTeacherMutation.mutateAsync(payload);
         notify('Teacher added successfully', 'success');
       }
       onSave(); // Trigger refresh and close dialog

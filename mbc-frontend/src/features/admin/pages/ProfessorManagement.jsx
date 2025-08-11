@@ -8,8 +8,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 // ✨ CORRECTED IMPORTS
 import { useNotify } from '@/components/UI/NotificationProvider';
-import { useAdminTeachers } from '@/hooks/useAdminData'; // Hook to get teachers
-import { useDeleteTeacher } from '../../../api/professor'; // Hook for deleting a teacher
+import { useAdminTeachers } from '@/hooks/useTeachers'; // Hook to get teachers
+import { useDeleteTeacher } from '@/hooks/useTeachers';
 import TeacherForm from '../components/TeacherForm'; // The form component
 
 export default function ProfessorManagement() {
