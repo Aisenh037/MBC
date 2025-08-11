@@ -6,7 +6,11 @@ import CoPresentIcon from '@mui/icons-material/CoPresent';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import CampaignIcon from '@mui/icons-material/Campaign';
 import StatCard from '../../../components/UI/StatCard';
+<<<<<<< HEAD
 import { useAnalytics } from '@/hooks/useAnalytics';
+=======
+import { useAnalytics } from '../../../hooks/useAnalytics'; //  
+>>>>>>> c806d27 (updated env file)
 export default function AdminDashboard() {
   const { data: stats, isLoading } = useAnalytics();
 

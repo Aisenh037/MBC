@@ -9,7 +9,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 import { useNotify } from '../../../components/UI/NotificationProvider.jsx';
 import NoticeForm from '../components/NoticeForm.jsx'; 
+<<<<<<< HEAD
 import { useNotices, useDeleteNotice } from '@/hooks/useNotices.js';
+=======
+import { useNotices, useDeleteNotice } from '../../../hooks/useNotices.js';
+>>>>>>> c806d27 (updated env file)
 
 export default function NoticeManagement() {
   const [dialogOpen, setDialogOpen] = useState(false);
