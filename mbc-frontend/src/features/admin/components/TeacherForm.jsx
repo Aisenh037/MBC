@@ -4,14 +4,8 @@ import {
   DialogTitle, DialogContent, DialogActions, Button,
   TextField, Grid, CircularProgress,
 } from '@mui/material';
-<<<<<<< HEAD
-import { useNotify } from '../../../components/UI/NotificationProvider.jsx';
-import { useAddTeacher, useUpdateTeacher } from '@/hooks/useTeachers.js';
-=======
-// ✨ CORRECTED PATHS (using path aliases is cleaner)
 import { useNotify } from '@/components/UI/NotificationProvider';
 import { useAddTeacher, useUpdateTeacher } from '@/hooks/useTeachers';
->>>>>>> c806d27 (updated env file)
 
 export default function TeacherForm({ editingTeacher, onClose }) {
   // State to manage the form's input fields
@@ -50,41 +44,16 @@ export default function TeacherForm({ editingTeacher, onClose }) {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-<<<<<<< HEAD
-  const addTeacherMutation = useAddTeacher();
-  const updateTeacherMutation = useUpdateTeacher();
+// This function is called when the user clicks the "Save" button
+  const isLoading = addMutation.isLoading || updateMutation.isLoading;
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const payload = { ...form };
-      if (editingTeacher && !payload.password) {
-        delete payload.password; // Don't send empty password on update
-      }
-      
-      if (editingTeacher) {
-        await updateTeacherMutation.mutateAsync({ id: editingTeacher._id, data: payload });
-        notify('Teacher updated successfully', 'success');
-      } else {
-        await addTeacherMutation.mutateAsync(payload);
-        notify('Teacher added successfully', 'success');
-      }
-      onSave(); // Trigger refresh and close dialog
-    } catch (err) {
-      notify(err.response?.data?.error || 'Operation failed', 'error');
-    } finally {
-      setLoading(false);
-    }
-=======
-  // This function is called when the user clicks the "Save" button
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     // Choose which mutation to use: update if editing, create if not
     const mutation = editingTeacher ? updateMutation : addMutation;
     const payload = editingTeacher ? { id: editingTeacher._id, data: form } : form;
-    
+
     // Execute the mutation
     mutation.mutate(payload, {
       onSuccess: () => {
@@ -95,11 +64,7 @@ export default function TeacherForm({ editingTeacher, onClose }) {
         notify(err.response?.data?.error || 'Operation failed', 'error');
       },
     });
->>>>>>> c806d27 (updated env file)
   };
-
-  // A single loading state derived from our mutation hooks
-  const isLoading = addMutation.isLoading || updateMutation.isLoading;
 
   return (
     <form onSubmit={handleSubmit}>

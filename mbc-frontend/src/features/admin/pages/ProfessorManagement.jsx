@@ -8,14 +8,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 // ✨ CORRECTED IMPORTS (using clean path aliases)
 import { useNotify } from '@/components/UI/NotificationProvider';
-<<<<<<< HEAD
-import { useAdminTeachers } from '@/hooks/useTeachers'; // Hook to get teachers
-import { useDeleteTeacher } from '@/hooks/useTeachers';
-import TeacherForm from '../components/TeacherForm'; // The form component
-=======
 import { useAdminTeachers, useDeleteTeacher } from '@/hooks/useTeachers';
 import TeacherForm from '../components/TeacherForm';
->>>>>>> c806d27 (updated env file)
 
 export default function ProfessorManagement() {
   // State to manage whether the "Add/Edit" dialog is open
