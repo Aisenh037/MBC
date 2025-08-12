@@ -1,4 +1,3 @@
-// routes/teachersRoute.js
 import express from "express";
 import {
   getTeachers,
@@ -6,13 +5,15 @@ import {
   updateTeacher,
   deleteTeacher
 } from "../controllers/professorController.js";
-import protect from "../middleware/auth.js";
-import requireRole from "../middleware/requireRole.js";
+// --- THIS IS THE FIX ---
+import { protect, authorize } from "../middleware/auth.js";
 
 const router = express.Router();
 
+// All routes in this file are protected and require a user to be logged in.
 router.use(protect);
-router.use(requireRole('admin')); // Only admins can manage teacher records
+// All routes in this file are for admins only.
+router.use(authorize('admin'));
 
 router.route('/')
   .get(getTeachers)

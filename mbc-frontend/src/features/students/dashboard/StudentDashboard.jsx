@@ -1,35 +1,26 @@
-// src/features/students/dashboard/StudentDashboard.jsx
-import React, { useEffect, useState } from 'react';
-import { Box, Typography, Grid, Paper, List, ListItem, ListItemText, Divider, Chip } from '@mui/material';
+import React from 'react';
+import { Box, Typography, Grid, Paper, List, ListItem, ListItemText, Chip } from '@mui/material';
 import { useAuthStore } from '../../../stores/authStore';
-import { useNotify } from '../../../components/UI/NotificationProvider';
-import { getStudentDashboardData } from '../../../api/student';
+import { useStudentDashboard } from '../../../hooks/useDashboard';
 import LoadingSpinner from '../../../components/UI/LoadingSpinner';
+import ErrorMessage from '../../../components/UI/ErrorMessage';
 
 export default function StudentDashboard() {
   const { user } = useAuthStore();
-  const notify = useNotify();
-  const [dashboardData, setDashboardData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  
+  // --- THIS IS THE IMPROVEMENT ---
+  // Fetch data, loading, and error states directly from our custom hook.
+  // No more useState or useEffect needed here.
+  const { data: dashboardData, isLoading, isError, error } = useStudentDashboard();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data } = await getStudentDashboardData();
-        setDashboardData(data.data);
-      } catch (error) {
-        notify('Could not load dashboard data', 'error');
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [notify]);
-
-  if (loading) {
+  if (isLoading) {
     return <LoadingSpinner fullPage />;
   }
+
+  if (isError) {
+    return <ErrorMessage message={error.message || 'Could not load dashboard data.'} />;
+  }
+  // --- END OF IMPROVEMENT ---
 
   return (
     <Box>

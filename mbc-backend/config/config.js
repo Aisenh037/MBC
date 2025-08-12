@@ -1,15 +1,71 @@
 import dotenv from 'dotenv';
-// dotenv.config(); already handled in index.js
+import Joi from 'joi';
+import path from 'path';
 
-export const PORT = process.env.PORT || 5000;
-export const NODE_ENV = process.env.NODE_ENV || 'development';
-export const MONGO_URI = process.env.MONGO_URI || '';
-export const CORS_ORIGIN = process.env.CORS_ORIGIN || '*';
+const envFile = `.env.${process.env.NODE_ENV || 'development'}`;
+dotenv.config({ path: path.resolve(process.cwd(), envFile) });
 
-// Rate Limiting
-export const RATE_LIMIT_WINDOW = process.env.RATE_LIMIT_WINDOW || 15 * 60 * 1000; // 15 minutes
-export const RATE_LIMIT_MAX = process.env.RATE_LIMIT_MAX || 100;
+const envVarsSchema = Joi.object({
+  NODE_ENV: Joi.string().valid('development', 'production', 'test').default('development'),
+  PORT: Joi.number().default(5000),
+  
+  MONGO_URI: Joi.string().required().description('MongoDB connection URI is required'),
+  JWT_SECRET: Joi.string().required().description('JWT secret is required'),
+  JWT_EXPIRE: Joi.string().default('1d'),
+  JWT_COOKIE_EXPIRE: Joi.number().default(1),
+  CORS_ORIGINS: Joi.string().default('http://localhost:5173'),
+  
+  // --- Email Service Configuration (Now Optional) ---
+  EMAIL_HOST: Joi.string().description('SMTP host for sending emails'),
+  EMAIL_PORT: Joi.number().description('SMTP port'),
+  EMAIL_USER: Joi.string().description('SMTP username'),
+  EMAIL_PASS: Joi.string().description('SMTP password'),
+  FROM_EMAIL: Joi.string().email().description('The "from" email address'),
+  FROM_NAME: Joi.string().description('The "from" name'),
 
-// File Uploads
-export const FILE_UPLOAD_PATH = process.env.FILE_UPLOAD_PATH || 'public/uploads';
-export const MAX_FILE_UPLOAD = process.env.MAX_FILE_UPLOAD || 10 * 1024 * 1024; // 10MB
+  FRONTEND_URL: Joi.string().uri().required().description('Base URL of the frontend application'),
+
+}).unknown();
+
+const { value: envVars, error } = envVarsSchema.prefs({ errors: { label: 'key' } }).validate(process.env);
+
+if (error) {
+  throw new Error(`[CONFIG ERROR] Environment variable validation failed: ${error.message}`);
+}
+
+// Check if all required email variables are present to enable the email service
+const isEmailServiceConfigured = 
+    envVars.EMAIL_HOST && 
+    envVars.EMAIL_PORT && 
+    envVars.EMAIL_USER && 
+    envVars.EMAIL_PASS &&
+    envVars.FROM_EMAIL &&
+    envVars.FROM_NAME;
+
+// Export a clean, validated, and typed configuration object
+export default {
+  env: envVars.NODE_ENV,
+  port: envVars.PORT,
+  mongoose: {
+    url: envVars.MONGO_URI,
+  },
+  jwt: {
+    secret: envVars.JWT_SECRET,
+    expiresIn: envVars.JWT_EXPIRE,
+    cookieExpire: envVars.JWT_COOKIE_EXPIRE,
+  },
+  cors: {
+    origins: envVars.CORS_ORIGINS.split(','),
+  },
+  // Only include the email config if it's fully set up
+  email: isEmailServiceConfigured ? {
+    host: envVars.EMAIL_HOST,
+    port: envVars.EMAIL_PORT,
+    auth: {
+      user: envVars.EMAIL_USER,
+      pass: envVars.EMAIL_PASS,
+    },
+    from: `"${envVars.FROM_NAME}" <${envVars.FROM_EMAIL}>`,
+  } : null, // Set to null if not configured
+  frontendUrl: envVars.FRONTEND_URL,
+};

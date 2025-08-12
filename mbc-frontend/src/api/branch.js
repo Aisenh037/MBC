@@ -1,5 +1,5 @@
 // src/api/branch.js
-import api from './axios.js';
+import api from '../services/apiClient'; 
 
 export const getBranches = () => api.get('/branches');
 export const getBranchById = (id) => api.get(`/branches/${id}`);

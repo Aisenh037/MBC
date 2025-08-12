@@ -1,20 +1,21 @@
-// src/features/admin/pages/AdminDashboard.jsx
 import React from 'react';
 import { Grid, Typography } from '@mui/material';
 import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline';
 import CoPresentIcon from '@mui/icons-material/CoPresent';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import CampaignIcon from '@mui/icons-material/Campaign';
-import StatCard from '../../../components/UI/StatCard'; 
-import { useAnalytics } from '../../../hooks/useAnalytics'; 
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import StatCard from '@/components/UI/StatCard';
+import { useAnalytics } from '@/hooks/useAnalytics';
 
 export default function AdminDashboard() {
   const { data: stats, isLoading } = useAnalytics();
 
   const dashboardItems = [
     { title: 'Students', count: stats?.totalStudents, icon: <PeopleOutlineIcon />, color: 'primary.main', link: '/admin/students' },
-    { title: 'Teachers', count: stats?.totalTeachers, icon: <CoPresentIcon />, color: 'success.main', link: '/admin/teachers' },
+    { title: 'Professors', count: stats?.totalProfessors, icon: <CoPresentIcon />, color: 'success.main', link: '/admin/professors' },
     { title: 'Branches', count: stats?.totalBranches, icon: <AccountTreeIcon />, color: 'secondary.main', link: '/admin/branches' },
+    { title: 'Courses', count: stats?.totalCourses, icon: <LibraryBooksIcon />, color: 'info.main', link: '/admin/courses' },
     { title: 'Notices', count: stats?.totalNotices, icon: <CampaignIcon />, color: 'warning.main', link: '/admin/notices' },
   ];
 

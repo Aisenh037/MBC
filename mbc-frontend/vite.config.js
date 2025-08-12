@@ -12,16 +12,20 @@ export default defineConfig({
   server: {
     port: 5173,
     open: true,
-    host: true, // Allow access from network
+    host: true,
 
     proxy: {
-      // Forward /api/* to backend /api/v1/*
-      '/api': {
+      // --- THIS IS THE FIX ---
+      // Match any request that starts with /api/v1
+      '/api/v1': {
         target: process.env.VITE_API_URL || 'http://localhost:5000',
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => path.replace(/^\/api/, '/api/v1'),
+        // The rewrite is removed because the frontend already sends the correct path
       },
+      // --- END OF FIX ---
+
+      // This rule for uploads is correct and can remain
       '/uploads': {
         target: process.env.VITE_API_URL || 'http://localhost:5000',
         changeOrigin: true,

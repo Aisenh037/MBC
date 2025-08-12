@@ -1,53 +1,51 @@
-// src/components/Layout/ProtectedRoute.jsx
 import { useEffect, useState } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuthStore } from "../../stores/authStore";
 import LoadingSpinner from "./LoadingSpinner";
 
 /**
- * A protected route component that handles authentication and authorization.
- * It checks for a valid token, verifies the user's session with the backend,
- * and ensures the user has the required role to access a route.
- * @param {{ allowedRoles: string[] }} props - An array of roles allowed to access this route.
+ * A protected route that verifies the user's session on initial load to prevent UI flashing.
  */
-export default function ProtectedRoute({ allowedRoles }) {
-  const { user, token, checkAuth } = useAuthStore();
+export default function ProtectedRoute({ children, allowedRoles }) {
+  const { user, token, checkAuth, isAuthenticated } = useAuthStore();
   const [isVerifying, setIsVerifying] = useState(true);
   const location = useLocation();
 
   useEffect(() => {
     const verifyUserSession = async () => {
       try {
-        await checkAuth(); // Verifies token with the backend
+        // This function will verify the token with the backend.
+        await checkAuth();
       } catch (error) {
-        // Auth check failed (e.g., token expired/invalid)
-        // The store will handle logging out.
+        // If token is invalid, authStore will handle logging out.
       } finally {
         setIsVerifying(false);
       }
     };
 
-    if (!user && token) {
+    // Only verify if there's a token but the user isn't authenticated yet (on page load).
+    if (token && !isAuthenticated) {
       verifyUserSession();
     } else {
       setIsVerifying(false);
     }
-  }, [checkAuth, token, user]);
+  }, [token, isAuthenticated, checkAuth]);
 
+  // 1. While verifying the token, show a full-page loading spinner.
   if (isVerifying) {
     return <LoadingSpinner fullPage />;
   }
 
-  // 1. If no token, redirect to login page
-  if (!token) {
-    return <Navigate to="/" state={{ from: location }} replace />;
+  // 2. After verification, if the user is not authenticated, redirect to login.
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
   
-  // 2. If user is authenticated, check for role authorization
-  if (allowedRoles && !allowedRoles.includes(user?.role)) {
+  // 3. If there is a user, check their role for authorization.
+  if (allowedRoles && !allowedRoles.includes(user.role)) {
     return <Navigate to="/unauthorized" replace />;
   }
 
-  // 3. If authenticated and authorized, render the child components
-  return <Outlet />;
+  // 4. If everything is fine, render the requested page.
+  return children ? children : <Outlet />;
 }

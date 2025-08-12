@@ -10,7 +10,7 @@
 
 
 // src/api/student.js
-import api from './axios.js';
+import api from '../services/apiClient';
 
 // Core CRUD
 export const getStudents = (params) => api.get('/students', { params });

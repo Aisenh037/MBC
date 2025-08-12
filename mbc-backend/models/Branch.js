@@ -8,23 +8,23 @@ const branchSchema = new mongoose.Schema({
     unique: true,
     trim: true,
   },
-  description: {
+  department: {
     type: String,
+    enum: ['MBC', 'CSE', 'ECE', ' EE'],
+    required: true,
   },
   capacity: {
     type: Number,
     required: true,
     default: 0
   },
-  department: {
+  description: {
     type: String,
-    enum: ['MBC', 'CSE', 'ECE', ' EE'],
-    required: true,
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  }
+  establishmentYear: { 
+    type: Number, 
+    required: true
+ }
 });
 
 const Branch = mongoose.model('Branch', branchSchema);

@@ -1,69 +1,67 @@
 // services/courseService.js
 import Course from '../models/Course.js';
-import User from '../models/user.js';
+import Professor from '../models/professor.js';
 import ErrorResponse from '../utils/errorResponse.js';
 
 /**
- * Creates a new course.
+ * Creates a new course and links it to the creating professor.
  * @param {object} courseData - Data for the new course.
+ * @param {string} userId - The user ID of the professor creating the course.
  * @returns {Promise<Course>}
  */
-export const createCourse = async (courseData) => {
-  return Course.create(courseData);
-};
-
-/**
- * Finds a course by ID and populates its student data.
- * @param {string} courseId - The course ID.
- * @returns {Promise<Course>}
- */
-export const getCourseWithStudents = async (courseId) => {
-  const course = await Course.findById(courseId).populate('students', 'name email');
-  if (!course) {
-    throw new ErrorResponse(`Course not found with id of ${courseId}`, 404);
+export const createNewCourse = async (courseData, userId) => {
+  const professor = await Professor.findOne({ user: userId });
+  if (!professor) {
+    throw new ErrorResponse('Only professors can create courses.', 403);
   }
+
+  // Ensure the professor is assigned to the branch they are creating a course for
+  if (!professor.branches.includes(courseData.branch)) {
+      throw new ErrorResponse('You are not authorized to create a course for this branch.', 403);
+  }
+
+  courseData.createdBy = professor._id;
+  const course = await Course.create(courseData);
   return course;
 };
 
 /**
- * Enrolls a student in a course.
- * @param {string} courseId - The course ID.
- * @param {string} studentId - The student's user ID.
+ * Updates an existing course after verifying ownership.
+ * @param {string} courseId - The ID of the course to update.
+ * @param {object} updateData - The data to update.
+ * @param {object} user - The currently authenticated user.
  * @returns {Promise<Course>}
  */
-export const enrollStudentInCourse = async (courseId, studentId) => {
-  const course = await Course.findById(courseId);
+export const updateCourseById = async (courseId, updateData, user) => {
+  const course = await Course.findById(courseId).populate('createdBy');
   if (!course) {
-    throw new ErrorResponse(`Course not found with id of ${courseId}`, 404);
-  }
-  
-  if (course.students.includes(studentId)) {
-    throw new ErrorResponse('Student already enrolled in this course', 400);
+    throw new ErrorResponse(`Course not found with id ${courseId}`, 404);
   }
 
-  course.students.push(studentId);
-  await course.save();
-  return course;
+  // Authorization check: Must be admin or the professor who created the course
+  if (course.createdBy.user.toString() !== user.id && user.role !== 'admin') {
+    throw new ErrorResponse('You are not authorized to update this course.', 403);
+  }
+
+  return Course.findByIdAndUpdate(courseId, updateData, { new: true, runValidators: true });
 };
 
 /**
- * Assigns a faculty member to a course.
- * @param {string} courseId - The course ID.
- * @param {string} facultyId - The faculty's user ID.
- * @returns {Promise<Course>}
+ * Deletes a course after verifying ownership.
+ * @param {string} courseId - The ID of the course to delete.
+ * @param {object} user - The currently authenticated user.
  */
-export const assignFacultyToCourse = async (courseId, facultyId) => {
-  const course = await Course.findById(courseId);
-  if (!course) {
-    throw new ErrorResponse(`Course not found with id of ${courseId}`, 404);
-  }
-  
-  const faculty = await User.findOne({ _id: facultyId, role: 'teacher' });
-  if (!faculty) {
-      throw new ErrorResponse(`Faculty member not found with id ${facultyId}`, 404);
-  }
+export const deleteCourseById = async (courseId, user) => {
+    const course = await Course.findById(courseId).populate('createdBy');
+    if (!course) {
+        throw new ErrorResponse(`Course not found with id ${courseId}`, 404);
+    }
 
-  course.faculty = facultyId;
-  await course.save();
-  return course;
+    // Authorization check: Must be admin or the professor who created the course
+    if (course.createdBy.user.toString() !== user.id && user.role !== 'admin') {
+        throw new ErrorResponse('You are not authorized to delete this course.', 403);
+    }
+    
+    // In a real-world scenario, you might check if students are enrolled before deleting.
+    await course.remove();
 };

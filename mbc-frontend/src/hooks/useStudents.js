@@ -1,4 +1,3 @@
-// src/hooks/useStudents.js
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   getStudents,
@@ -8,17 +7,20 @@ import {
   sendResetLink,
   bulkImportStudents,
   bulkExportStudents,
-} from '../api/student'; // Ensure this path is correct
+} from '../api/student';
 
-const STUDENT_QUERY_KEY = 'adminStudents'; // Consistent query key
+const STUDENT_QUERY_KEY = 'adminStudents';
 
 // Hook for admins/teachers to get all students
 export const useAdminStudents = () => {
   return useQuery({
     queryKey: [STUDENT_QUERY_KEY],
     queryFn: getStudents,
-    // The select function transforms the data, making the component cleaner
-    select: (data) => data?.data?.data || [],
+    // --- THIS IS THE IMPROVEMENT ---
+    // The 'response' object from axios has a 'data' property which is the body.
+    // The body from our backend also has a 'data' property which holds the array.
+    // This makes the path clear: response.data.data
+    select: (response) => response.data.data || [],
   });
 };
 
@@ -28,13 +30,14 @@ export const useAddStudent = () => {
   return useMutation({
     mutationFn: addStudent,
     onSuccess: () => {
-      // When a mutation is successful, invalidate the query to refetch fresh data
+      // This correctly tells React Query to refetch the student list
       queryClient.invalidateQueries({ queryKey: [STUDENT_QUERY_KEY] });
     },
   });
 };
 
-// Hook to update a student
+// --- (The rest of your hooks are correct and do not need changes) ---
+
 export const useUpdateStudent = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -45,7 +48,6 @@ export const useUpdateStudent = () => {
   });
 };
 
-// Hook to delete a student
 export const useDeleteStudent = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -56,7 +58,6 @@ export const useDeleteStudent = () => {
   });
 };
 
-// Hooks for your feature-rich management tool
 export const useSendResetLink = () => {
     return useMutation({ mutationFn: (userId) => sendResetLink(userId) });
 };

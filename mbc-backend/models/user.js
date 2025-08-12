@@ -1,26 +1,17 @@
-// models/user.js
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+// --- THIS IS THE FIX ---
+import config from '../config/config.js'; 
 
 const userSchema = new mongoose.Schema({
-  name: { type: String, required: [true, 'Name is required'], trim: true },
-  email: {
-    type: String,
-    required: [true, 'Email is required'],
-    unique: true,
-    lowercase: true,
-    trim: true,
-  },
+  name: { type: String, required: true, trim: true },
+  email: { type: String, required: true, unique: true, lowercase: true, trim: true },
   password: { type: String, required: true, select: false, minlength: 6 },
-  role: {
-    type: String,
-    enum: ['Developer', 'Admin', 'professor', 'student'], //  roles
-    required: true,
-  },
-  // We remove department and scholarNumber from here to keep the User model generic.
+  role: { type: String, enum: ['admin', 'professor', 'student'], required: true },
 }, { timestamps: true });
 
-// Hash password before saving (no changes needed here)
+// Hash password before saving
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   const salt = await bcrypt.genSalt(10);
@@ -28,18 +19,16 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-// Match password method (no changes needed here)
+// Method to compare passwords
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-// Add this method to your userSchema
+// Method to generate a JWT, now using the correct config
 userSchema.methods.getSignedJwtToken = function() {
-  return jwt.sign(
-    { id: this._id, role: this.role },
-    process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRE || '1d' }
-  );
+  return jwt.sign({ id: this._id, role: this.role }, config.jwt.secret, {
+    expiresIn: config.jwt.expiresIn,
+  });
 };
 
 export default mongoose.model('User', userSchema);

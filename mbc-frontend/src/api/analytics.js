@@ -1,4 +1,4 @@
 // src/api/analytics.js
-import api from './axios.js';
+import apiClient from '../services/apiClient'; // Corrected import path
 
-export const getAnalyticsData = () => api.get('/analytics');
+export const getAnalyticsData = () => apiClient.get('/analytics');
