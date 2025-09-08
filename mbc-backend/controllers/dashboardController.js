@@ -35,3 +35,14 @@ export const getStudentDashboard = asyncHandler(async (req, res, next) => {
 });
 
 // You can add getProfessorDashboard here later following the same pattern
+
+// @desc    Get data for the professor dashboard
+// @route   GET /api/v1/dashboards/professor
+export const getProfessorDashboard = asyncHandler(async (req, res, next) => {
+  res.status(200).json({
+    success: true,
+    data: {
+      message: "Professor dashboard data will be implemented soon"
+    }
+  });
+});

@@ -15,6 +15,12 @@
     "seed": "node utils/seeder.js",
     "seed:destroy": "node utils/seeder.js -d"
   },
+  "jest": {
+    "testEnvironment": "node",
+    "moduleFileExtensions": ["js", "json", "jsx", "node"],
+    "testPathIgnorePatterns": ["/node_modules/"],
+    "transformIgnorePatterns": ["/node_modules/"]
+  },
   "keywords": [
     "MBC",
     "NIT-Bhopal",
@@ -31,6 +37,7 @@
     "csv-stringify": "^6.6.0",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "express-async-handler": "^1.2.0",
     "express-mongo-sanitize": "^2.2.0",
     "express-rate-limit": "^7.5.1",
     "fast-csv": "^5.0.5",

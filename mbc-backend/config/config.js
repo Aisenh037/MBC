@@ -1,6 +1,6 @@
-import dotenv from 'dotenv';
-import Joi from 'joi';
-import path from 'path';
+const dotenv = require('dotenv');
+const Joi = require('joi');
+const path = require('path');
 
 const envFile = `.env.${process.env.NODE_ENV || 'development'}`;
 dotenv.config({ path: path.resolve(process.cwd(), envFile) });
@@ -14,14 +14,15 @@ const envVarsSchema = Joi.object({
   JWT_EXPIRE: Joi.string().default('1d'),
   JWT_COOKIE_EXPIRE: Joi.number().default(1),
   CORS_ORIGINS: Joi.string().default('http://localhost:5173'),
+  CORS_ORIGIN: Joi.string(), // For backward compatibility
   
   // --- Email Service Configuration (Now Optional) ---
-  EMAIL_HOST: Joi.string().description('SMTP host for sending emails'),
-  EMAIL_PORT: Joi.number().description('SMTP port'),
-  EMAIL_USER: Joi.string().description('SMTP username'),
-  EMAIL_PASS: Joi.string().description('SMTP password'),
-  FROM_EMAIL: Joi.string().email().description('The "from" email address'),
-  FROM_NAME: Joi.string().description('The "from" name'),
+  EMAIL_HOST: Joi.string().optional().description('SMTP host for sending emails'),
+  EMAIL_PORT: Joi.number().optional().description('SMTP port'),
+  EMAIL_USER: Joi.string().optional().description('SMTP username'),
+  EMAIL_PASS: Joi.string().optional().description('SMTP password'),
+  FROM_EMAIL: Joi.string().email().optional().description('The "from" email address'),
+  FROM_NAME: Joi.string().optional().description('The "from" name'),
 
   FRONTEND_URL: Joi.string().uri().required().description('Base URL of the frontend application'),
 
@@ -43,7 +44,7 @@ const isEmailServiceConfigured =
     envVars.FROM_NAME;
 
 // Export a clean, validated, and typed configuration object
-export default {
+module.exports = {
   env: envVars.NODE_ENV,
   port: envVars.PORT,
   mongoose: {
@@ -55,7 +56,7 @@ export default {
     cookieExpire: envVars.JWT_COOKIE_EXPIRE,
   },
   cors: {
-    origins: envVars.CORS_ORIGINS.split(','),
+    origins: (envVars.CORS_ORIGINS || envVars.CORS_ORIGIN || 'http://localhost:5173').split(','),
   },
   // Only include the email config if it's fully set up
   email: isEmailServiceConfigured ? {

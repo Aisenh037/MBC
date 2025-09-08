@@ -5,23 +5,21 @@ import {
   updateBranch,
   deleteBranch,
 } from '../controllers/branchController.js';
-// Corrected import for consistency
 import { protect, authorize } from '../middleware/auth.js';
+import advancedResults from '../middleware/advancedResults.js';
+import Branch from '../models/Branch.js';
 
 const router = express.Router();
 
-// All branch operations are protected and admin-only
 router.use(protect);
 router.use(authorize('admin'));
 
 router.route('/')
-  .get(getBranches)
+  .get(advancedResults(Branch), getBranches)
   .post(createBranch);
 
 router.route('/:id')
   .put(updateBranch)
   .delete(deleteBranch);
-
-// The unused routes that caused the crash have been removed.
 
 export default router;

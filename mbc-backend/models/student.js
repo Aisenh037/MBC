@@ -7,7 +7,17 @@ const studentSchema = new mongoose.Schema({
   mobile: { type: String, trim: true },
   branch: { type: mongoose.Schema.Types.ObjectId, ref: 'Branch', required: true },
   currentSemester: { type: Number, min: 1, max: 8, required: true },
-  department: { type: String, default: 'MBC', required: true }
+  department: { type: String, default: 'MBC', required: true },
+
+  // For future password reset support (admin-triggered)
+  resetPasswordToken: { type: String },
+  resetPasswordExpire: { type: Date },
+
+  // For OTP verification if used later
+  otp: { type: String },
+  otpExpire: { type: Date },
 }, { timestamps: true });
 
-export default mongoose.model('Student', studentSchema);
+// Guard to avoid OverwriteModelError during nodemon / hot-reloads
+const Student = mongoose.models.Student || mongoose.model('Student', studentSchema);
+export default Student;

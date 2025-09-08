@@ -1,35 +1,43 @@
 // utils/mail.js
-import nodemailer from 'nodemailer';
-import logger from './logger.js';
+const nodemailer = require('nodemailer');
+const logger = require('./logger.js');
+const config = require('../config/config.js');
 
-//   Create the transporter outside the sendEmail function
-// This ensures it's created only once and reused for all emails.
-const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST,
-  port: process.env.EMAIL_PORT,
-  secure: process.env.NODE_ENV === 'production', // Use true for 465, false for other ports
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
 
-// Verify connection configuration on startup
-transporter.verify(function (error, success) {
-  if (error) {
-    logger.error('Mail transporter connection error:', error);
-  } else {
-    logger.info('Mail server is ready to take our messages');
-  }
-});
+// Conditionally create transporter only if email is configured
+let transporter = null;
+if (config.email) {
+  transporter = nodemailer.createTransport({
+    host: config.email.host,
+    port: config.email.port,
+    secure: process.env.NODE_ENV === 'production', // Use true for 465, false for other ports
+    auth: config.email.auth,
+  });
+
+  // Verify connection configuration on startup
+  transporter.verify(function (error, success) {
+    if (error) {
+      logger.error('Mail transporter connection error:', error);
+    } else {
+      logger.info('Mail server is ready to take our messages');
+    }
+  });
+} else {
+  logger.info('Email service not configured. Emails will not be sent.');
+}
 
 /**
  * Sends an email using the pre-configured transporter.
  * @param {object} options - Email options { to, subject, text, html }
  */
-export const sendEmail = async (options) => {
+const sendEmail = async (options) => {
+  if (!transporter) {
+    logger.warn(`Email not sent to ${options.to}: Email service not configured.`);
+    return;
+  }
+
   const mailOptions = {
-    from: `"${process.env.FROM_NAME}" <${process.env.FROM_EMAIL}>`,
+    from: config.email.from,
     to: options.to,
     subject: options.subject,
     text: options.text,
@@ -43,3 +51,5 @@ export const sendEmail = async (options) => {
     logger.error(`Error sending email to ${options.to}:`, error);
   }
 };
+
+module.exports = { sendEmail };
