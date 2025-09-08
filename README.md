@@ -1,38 +1,45 @@
-# MBC Department Management System
+# AI-Powered SaaS Institute Management Web App
 
-Full-stack app for managing MBC (Mathematics, Bio-Informatics & Computer Applications) Department at NIT-B.
+This project is a modern, AI-enabled SaaS web application for institute management. It supports multiple user roles (Admin, Professor, Student) with role-based access and features including:
 
-## Quick Start (Local without Docker)
-- Prerequisites: Node 18+, MongoDB (or use in-memory DB)
-- Backend
-  - Copy `.env.example` to `.env` and set values
-  - Run: `cd mbc-backend && npm ci && npm run dev`
-- Frontend
-  - Set `VITE_API_URL` in `.env` (frontend) to `http://localhost:5000`
-  - Run: `cd mbc-frontend && npm ci && npm run dev`
+- User authentication (login/logout) for Admin, Professor, and Student
+- Professors can manage marks, assignments; students can view and submit assignments and marks
+- Admin can manage students, professors, branches/semesters, notices, fee collections, and other administrative tasks
+- AI-powered analytics dashboard for insights and decision making
+- Real-time chatbot for user assistance and support
+- Feedback submission system for continuous improvement
 
-## Local with Docker Compose
-- Copy `mbc-backend/.env.example` to `mbc-backend/.env` and set secrets
-- Run: `docker compose up --build`
-- Open: Frontend http://localhost:5173, Backend http://localhost:5000
+## Technology Stack
 
-## Deploy to Render
-A Render blueprint is provided in `render.yaml`:
-- `mbc-backend`: Node web service
-  - Set environment variables in the dashboard:
-    - `MONGO_URI`, `JWT_SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`
-    - `CORS_ORIGIN` to your frontend URL
-- `mbc-frontend`: Static site
-  - Set `VITE_API_URL` to your backend URL (or rely on provided proxy routes)
-  - Proxies `/api/*` and `/uploads/*` to backend
+- Frontend: React with React Router, Zustand for state management, React Query for data fetching
+- Backend: Node.js with Express, MongoDB for database
+- Authentication: JWT-based authentication and authorization
+- AI Analytics: Integration with AI/ML services (e.g., TensorFlow.js, or external AI APIs)
+- Real-time Chatbot: WebSocket-based or third-party chatbot integration (e.g., Dialogflow, Rasa)
+- Deployment: Docker, CI/CD pipelines
 
-### Environment Variables
-See `mbc-backend/.env.example` and `mbc-frontend/.env.example` for the list and descriptions.
+## Project Structure
 
-## Healthcheck
-- Backend: `GET /` returns `{ success: true }` when healthy
+- /frontend: React SPA with role-based protected routes and UI components
+- /backend: RESTful API with Express, MongoDB models, controllers, and services
+- /ai-services: AI analytics and chatbot microservices (optional)
 
-## Notes
-- Uploads are stored at `mbc-backend/public/uploads` and persisted in Docker via a volume and on Render via a disk.
+## Getting Started
 
-See `DEPLOYMENT.md` for more details.
+1. Clone the repository
+2. Setup environment variables for backend and frontend
+3. Run backend and frontend servers locally
+4. Access the app via browser and test features
+
+## Next Steps
+
+- Design database schema for users, courses, assignments, marks, fees, notices, feedback
+- Implement authentication and role-based access control
+- Build frontend UI components for each user role
+- Develop backend API endpoints for all features
+- Integrate AI analytics and chatbot services
+- Test thoroughly and deploy
+
+---
+
+This README will be updated as the project progresses.

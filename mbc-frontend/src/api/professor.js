@@ -1,6 +1,5 @@
 // src/api/professor.js
 import apiClient from '../services/apiClient';
-import api from '../services/apiService';
 
 export const getTeachers = (params) => apiClient.get('/teachers', { params });
 export const addTeacher = (teacherData) => apiClient.post('/teachers', teacherData);

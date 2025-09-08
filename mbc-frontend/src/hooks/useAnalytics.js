@@ -1,16 +1,21 @@
 import { useQuery } from '@tanstack/react-query';
-// Make sure this import path is correct for your project structure
-import { getAnalyticsData } from '../api/analytics'; 
+import { getAnalyticsData } from '../api/analytics';
 
 export const useAnalytics = () => {
   return useQuery({
     queryKey: ['analytics'],
-    queryFn: getAnalyticsData,
-    // --- THIS IS THE FIX ---
-    // The axios response is { data: { success, data: { ... } } }.
-    // We need to select the inner 'data' object.
-    select: (response) => response.data.data,
-    // --- END OF FIX ---
-    staleTime: 5 * 60 * 1000, // Cache this data for 5 minutes
+    queryFn: getAnalyticsData, // No params needed
+    select: (response) => response?.data?.data ?? {},
+    staleTime: 5 * 60 * 1000,
+    retry: 0,
+    refetchOnWindowFocus: false,
+    onError: (error) => {
+      console.error('Failed to fetch analytics:', {
+        status: error.status || 'N/A',
+        message: error.message || 'Unknown error',
+        data: error.data || null,
+      });
+      // Example: toast.error(`Error fetching analytics: ${error.message}`);
+    },
   });
 };
