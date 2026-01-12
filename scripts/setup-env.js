@@ -29,6 +29,11 @@ const envFiles = [
     source: join(rootDir, 'mbc-frontend', '.env.example'),
     target: join(rootDir, 'mbc-frontend', '.env'),
     name: 'Frontend'
+  },
+  {
+    source: join(rootDir, 'ai-service', '.env.example'),
+    target: join(rootDir, 'ai-service', '.env'),
+    name: 'AI Service'
   }
 ];
 
@@ -62,7 +67,7 @@ async function copyEnvFile(source, target, name) {
 
 async function generateSecrets() {
   const crypto = await import('crypto');
-  
+
   return {
     jwtSecret: crypto.randomBytes(64).toString('hex'),
     postgresPassword: crypto.randomBytes(32).toString('hex'),
@@ -82,7 +87,7 @@ async function main() {
 
   // Generate secure secrets
   const secrets = await generateSecrets();
-  
+
   console.log('🔐 Generated secure secrets (replace in your .env files):');
   console.log(`JWT_SECRET=${secrets.jwtSecret}`);
   console.log(`POSTGRES_PASSWORD=${secrets.postgresPassword}`);
