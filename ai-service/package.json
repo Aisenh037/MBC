@@ -1,0 +1,14 @@
+{
+    "name": "ai-service",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "dev": "python main.py",
+        "install:deps": "pip install -r requirements.txt"
+    },
+    "keywords": [
+        "python",
+        "ai",
+        "fastapi"
+    ]
+}

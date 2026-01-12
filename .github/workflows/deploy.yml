@@ -1,0 +1,237 @@
+name: Deploy MBC System
+
+on:
+  push:
+    branches: [main, production]
+  pull_request:
+    branches: [main]
+
+env:
+  NODE_VERSION: '18'
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: mbc_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      
+      redis:
+        image: redis:7
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Install backend dependencies
+        working-directory: ./mbc-backend
+        run: npm ci
+
+      - name: Install frontend dependencies
+        working-directory: ./mbc-frontend
+        run: npm ci
+
+      - name: Setup test environment
+        working-directory: ./mbc-backend
+        run: |
+          cp .env.example .env.test
+          echo "DATABASE_URL=postgresql://postgres:test_password@localhost:5432/mbc_test" >> .env.test
+          echo "REDIS_URL=redis://localhost:6379" >> .env.test
+
+      - name: Generate Prisma client
+        working-directory: ./mbc-backend
+        run: npx prisma generate
+
+      - name: Run database migrations
+        working-directory: ./mbc-backend
+        run: npx prisma db push
+        env:
+          DATABASE_URL: postgresql://postgres:test_password@localhost:5432/mbc_test
+
+      - name: Run backend tests
+        working-directory: ./mbc-backend
+        run: npm test
+        env:
+          NODE_ENV: test
+          DATABASE_URL: postgresql://postgres:test_password@localhost:5432/mbc_test
+          REDIS_URL: redis://localhost:6379
+
+      - name: Run frontend tests
+        working-directory: ./mbc-frontend
+        run: npm test
+
+      - name: Build backend
+        working-directory: ./mbc-backend
+        run: npm run build
+
+      - name: Build frontend
+        working-directory: ./mbc-frontend
+        run: npm run build
+
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  build-and-push:
+    needs: [test, security-scan]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/production'
+    
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta-backend
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-backend
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Extract metadata for frontend
+        id: meta-frontend
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push backend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./mbc-backend
+          file: ./mbc-backend/Dockerfile.prod
+          push: true
+          tags: ${{ steps.meta-backend.outputs.tags }}
+          labels: ${{ steps.meta-backend.outputs.labels }}
+
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./mbc-frontend
+          file: ./mbc-frontend/Dockerfile.prod
+          push: true
+          tags: ${{ steps.meta-frontend.outputs.tags }}
+          labels: ${{ steps.meta-frontend.outputs.labels }}
+
+  deploy-staging:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    environment: staging
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to staging
+        run: |
+          echo "Deploying to staging environment..."
+          # Add your staging deployment commands here
+          # Example: kubectl apply -f k8s/staging/
+          # Or: docker-compose -f docker-compose.staging.yml up -d
+
+  deploy-production:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/production'
+    environment: production
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to production
+        run: |
+          echo "Deploying to production environment..."
+          # Add your production deployment commands here
+          # Example: kubectl apply -f k8s/production/
+          # Or: docker-compose -f docker-compose.prod.yml up -d
+
+      - name: Run health checks
+        run: |
+          echo "Running post-deployment health checks..."
+          # Add health check commands
+          # curl -f https://api.mbc.yourdomain.com/health
+
+      - name: Notify deployment
+        if: always()
+        run: |
+          echo "Sending deployment notification..."
+          # Add notification logic (Slack, email, etc.)
+
+  performance-test:
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run performance tests
+        run: |
+          echo "Running performance tests..."
+          # Add performance testing commands
+          # npx artillery run performance-tests.yml

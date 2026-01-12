@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Depends, Request
+from fastapi import FastAPI, HTTPException, Depends, Request, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
@@ -11,12 +11,20 @@ import motor.motor_asyncio
 from datetime import datetime, timedelta
 import numpy as np
 import pandas as pd
-from sklearn.linear_model import LinearRegression
-from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LinearRegression, LogisticRegression
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, mean_squared_error, r2_score, classification_report
 from textblob import TextBlob
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import nltk
 import httpx
+import json
+import io
+import uuid
+from pathlib import Path
 
 # Download NLTK data
 try:
@@ -528,3 +536,78 @@ if __name__ == "__main__":
         reload=True,
         log_level="info"
     )
+
+# New endpoint to upload dataset and analyze it
+@app.post("/api/v1/dataset/analyze", response_model=AnalyticsResponse)
+async def analyze_uploaded_dataset(
+    file: UploadFile = File(...),
+    analysis_type: str = Form("summary"),
+    request: Request = None
+):
+    """
+    Accepts a CSV dataset file uploaded by the user and performs analysis.
+    analysis_type can be 'summary', 'clustering', 'classification', or 'regression'.
+    """
+    try:
+        # Read uploaded file content
+        content = await file.read()
+        df = pd.read_csv(io.BytesIO(content))
+
+        # Basic summary analysis
+        if analysis_type == "summary":
+            summary = df.describe(include='all').to_dict()
+            return AnalyticsResponse(success=True, data={"summary": summary})
+
+        # Clustering analysis
+        elif analysis_type == "clustering":
+            # For simplicity, use KMeans with 3 clusters on numeric columns
+            numeric_df = df.select_dtypes(include=[np.number]).dropna()
+            if numeric_df.empty:
+                return AnalyticsResponse(success=False, data={"error": "No numeric data for clustering"})
+            kmeans = KMeans(n_clusters=3, random_state=42)
+            clusters = kmeans.fit_predict(numeric_df)
+            df['cluster'] = clusters.tolist()
+            cluster_counts = df['cluster'].value_counts().to_dict()
+            return AnalyticsResponse(success=True, data={"clusters": cluster_counts})
+
+        # Classification analysis (requires target column)
+        elif analysis_type == "classification":
+            if 'target' not in df.columns:
+                return AnalyticsResponse(success=False, data={"error": "Dataset must contain 'target' column for classification"})
+            X = df.drop(columns=['target'])
+            y = df['target']
+            # Encode categorical variables
+            X = pd.get_dummies(X)
+            if y.dtype == 'object':
+                le = LabelEncoder()
+                y = le.fit_transform(y)
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+            clf = RandomForestClassifier(random_state=42)
+            clf.fit(X_train, y_train)
+            y_pred = clf.predict(X_test)
+            accuracy = accuracy_score(y_test, y_pred)
+            report = classification_report(y_test, y_pred, output_dict=True)
+            return AnalyticsResponse(success=True, data={"accuracy": accuracy, "classification_report": report})
+
+        # Regression analysis (requires target column)
+        elif analysis_type == "regression":
+            if 'target' not in df.columns:
+                return AnalyticsResponse(success=False, data={"error": "Dataset must contain 'target' column for regression"})
+            X = df.drop(columns=['target'])
+            y = df['target']
+            # Encode categorical variables
+            X = pd.get_dummies(X)
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+            reg = RandomForestRegressor(random_state=42)
+            reg.fit(X_train, y_train)
+            y_pred = reg.predict(X_test)
+            mse = mean_squared_error(y_test, y_pred)
+            r2 = r2_score(y_test, y_pred)
+            return AnalyticsResponse(success=True, data={"mse": mse, "r2_score": r2})
+
+        else:
+            return AnalyticsResponse(success=False, data={"error": "Invalid analysis_type specified"})
+
+    except Exception as e:
+        logger.error(f"Error analyzing uploaded dataset: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to analyze uploaded dataset")

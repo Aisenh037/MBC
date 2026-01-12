@@ -1,20 +1,22 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
-const { MongoMemoryServer } = require('mongodb-memory-server');
-const app = require('../app.js');
+const dotenv = require('dotenv');
+const app = require('../app');
 const User = require('../models/user.js');
 
-let mongoServer;
+// Load environment variables
+dotenv.config({ path: './.env.development' });
 
 beforeAll(async () => {
-  mongoServer = await MongoMemoryServer.create();
-  const mongoUri = mongoServer.getUri();
-  await mongoose.connect(mongoUri);
+  // Connect to the actual database URI from .env file
+  if (!process.env.MONGO_URI) {
+    throw new Error('MONGO_URI environment variable is not set');
+  }
+  await mongoose.connect(process.env.MONGO_URI);
 });
 
 afterAll(async () => {
   await mongoose.disconnect();
-  await mongoServer.stop();
 });
 
 beforeEach(async () => {

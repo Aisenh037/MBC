@@ -1,0 +1,277 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ==============================================
+// Core Entities
+// ==============================================
+
+model Institution {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String   @db.VarChar(255)
+  code      String   @unique @db.VarChar(50)
+  address   String?
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  branches Branch[]
+  users    User[]
+
+  @@map("institutions")
+}
+
+model Branch {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  institutionId String   @map("institution_id") @db.Uuid
+  name          String   @db.VarChar(255)
+  code          String   @db.VarChar(50)
+  description   String?
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  institution Institution @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  users       User[]
+  courses     Course[]
+
+  @@unique([institutionId, code])
+  @@map("branches")
+}
+
+model User {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email         String   @unique @db.VarChar(255)
+  role          UserRole
+  profile       Json
+  institutionId String?  @map("institution_id") @db.Uuid
+  branchId      String?  @map("branch_id") @db.Uuid
+  isActive      Boolean  @default(true) @map("is_active")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  institution Institution? @relation(fields: [institutionId], references: [id])
+  branch      Branch?      @relation(fields: [branchId], references: [id])
+
+  // Relations as student
+  enrollments       Enrollment[]
+  submissions       Submission[]
+  attendanceRecords Attendance[]
+
+  // Relations as professor
+  assignmentsCreated Assignment[] @relation("ProfessorAssignments")
+  attendanceMarked   Attendance[] @relation("AttendanceMarkedBy")
+  submissionsGraded  Submission[] @relation("SubmissionGradedBy")
+  noticesCreated     Notice[]
+  fileUploads        FileUpload[] @relation("FileUploads")
+
+  @@map("users")
+}
+
+enum UserRole {
+  admin
+  professor
+  student
+
+  @@map("user_role")
+}
+
+model Course {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  branchId    String   @map("branch_id") @db.Uuid
+  name        String   @db.VarChar(255)
+  code        String   @db.VarChar(50)
+  credits     Int
+  semester    Int
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  branch      Branch       @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  enrollments Enrollment[]
+  assignments Assignment[]
+  attendance  Attendance[]
+
+  @@unique([branchId, code])
+  @@map("courses")
+}
+
+model Enrollment {
+  id           String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  studentId    String           @map("student_id") @db.Uuid
+  courseId     String           @map("course_id") @db.Uuid
+  academicYear String           @map("academic_year") @db.VarChar(10)
+  status       EnrollmentStatus @default(active)
+  enrolledAt   DateTime         @default(now()) @map("enrolled_at") @db.Timestamptz(6)
+
+  student User   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  course  Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, courseId, academicYear])
+  @@map("enrollments")
+}
+
+enum EnrollmentStatus {
+  active
+  completed
+  dropped
+  failed
+
+  @@map("enrollment_status")
+}
+
+model Assignment {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  courseId        String   @map("course_id") @db.Uuid
+  professorId     String   @map("professor_id") @db.Uuid
+  title           String   @db.VarChar(255)
+  description     String?
+  dueDate         DateTime? @map("due_date") @db.Timestamptz(6)
+  maxMarks        Int      @map("max_marks")
+  fileAttachments String[] @map("file_attachments")
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  course      Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  professor   User         @relation("ProfessorAssignments", fields: [professorId], references: [id])
+  submissions Submission[]
+  fileUploads FileUpload[]
+
+  @@map("assignments")
+}
+
+model Submission {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  assignmentId    String    @map("assignment_id") @db.Uuid
+  studentId       String    @map("student_id") @db.Uuid
+  content         String?
+  fileAttachments String[]  @map("file_attachments")
+  submittedAt     DateTime  @default(now()) @map("submitted_at") @db.Timestamptz(6)
+  marksObtained   Int?      @map("marks_obtained")
+  feedback        String?
+  gradedAt        DateTime? @map("graded_at") @db.Timestamptz(6)
+  gradedBy        String?   @map("graded_by") @db.Uuid
+
+  assignment Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  student    User       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  grader     User?      @relation("SubmissionGradedBy", fields: [gradedBy], references: [id])
+
+  @@unique([assignmentId, studentId])
+  @@map("submissions")
+}
+
+model Attendance {
+  id        String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  courseId  String           @map("course_id") @db.Uuid
+  studentId String           @map("student_id") @db.Uuid
+  date      DateTime         @db.Date
+  status    AttendanceStatus
+  markedBy  String           @map("marked_by") @db.Uuid
+  markedAt  DateTime         @default(now()) @map("marked_at") @db.Timestamptz(6)
+
+  course    Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  student   User   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  markedByUser User @relation("AttendanceMarkedBy", fields: [markedBy], references: [id])
+
+  @@unique([courseId, studentId, date])
+  @@map("attendance")
+}
+
+enum AttendanceStatus {
+  present
+  absent
+  late
+  excused
+
+  @@map("attendance_status")
+}
+
+model Notice {
+  id             String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title          String        @db.VarChar(255)
+  content        String
+  authorId       String        @map("author_id") @db.Uuid
+  targetAudience String[]      @map("target_audience")
+  priority       NoticePriority @default(normal)
+  expiresAt      DateTime?     @map("expires_at") @db.Timestamptz(6)
+  createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  author User @relation(fields: [authorId], references: [id])
+
+  @@map("notices")
+}
+
+enum NoticePriority {
+  low
+  normal
+  high
+  urgent
+
+  @@map("notice_priority")
+}
+
+// ==============================================
+// System Tables
+// ==============================================
+
+model SystemConfig {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  key       String   @unique @db.VarChar(100)
+  value     Json
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("system_config")
+}
+
+model AuditLog {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String?  @map("user_id") @db.Uuid
+  action    String   @db.VarChar(100)
+  resource  String   @db.VarChar(100)
+  resourceId String? @map("resource_id") @db.Uuid
+  oldValues Json?    @map("old_values")
+  newValues Json?    @map("new_values")
+  ipAddress String?  @map("ip_address") @db.VarChar(45)
+  userAgent String?  @map("user_agent")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@map("audit_logs")
+}
+
+model FileUpload {
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  publicId         String    @unique @map("public_id") @db.VarChar(255)
+  originalFilename String    @map("original_filename") @db.VarChar(255)
+  fileSize         Int       @map("file_size")
+  mimeType         String    @map("mime_type") @db.VarChar(100)
+  url              String    @db.VarChar(500)
+  category         FileCategory
+  assignmentId     String?   @map("assignment_id") @db.Uuid
+  documentCategory String?   @map("document_category") @db.VarChar(50)
+  uploadedBy       String    @map("uploaded_by") @db.Uuid
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  assignment Assignment? @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  uploader   User        @relation("FileUploads", fields: [uploadedBy], references: [id])
+
+  @@map("file_uploads")
+}
+
+enum FileCategory {
+  assignment
+  submission
+  profile
+  document
+
+  @@map("file_category")
+}
