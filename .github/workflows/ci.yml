@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mbc-backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: mbc-backend/package-lock.json
+      - run: npm ci
+      # - run: npm run lint --if-present
+      # Skipping tests by default; enable when tests are present
+      # - run: npm test --if-present
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mbc-frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: mbc-frontend/package-lock.json
+      - run: npm ci
+      - run: npm run lint --if-present
+      - run: npm run build
+        env:
+          VITE_API_URL: ""

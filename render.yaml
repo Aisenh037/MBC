@@ -1,0 +1,68 @@
+services:
+  # Main Node.js Backend
+  - type: web
+    name: mbc-backend
+    runtime: node
+    buildCommand: "npm install"
+    startCommand: "npm run dev"
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URI
+        fromSecret: mongo_uri
+      - key: JWT_SECRET
+        fromSecret: jwt_secret
+      - key: FRONTEND_URL
+        value: https://mbc-frontend.onrender.com
+      - key: CORS_ORIGINS
+        value: https://mbc-frontend.onrender.com
+    healthCheckPath: /health
+
+  # Python AI Service
+  - type: web
+    name: mbc-ai-service
+    runtime: python3
+    buildCommand: "pip install -r requirements.txt && python -c \"import nltk; nltk.download('punkt'); nltk.download('stopwords')\""
+    startCommand: "python main.py"
+    envVars:
+      - key: AI_PORT
+        value: 5001
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URI
+        fromSecret: mongo_uri
+      - key: BACKEND_URL
+        value: https://mbc-backend.onrender.com
+      - key: FRONTEND_URL
+        value: https://mbc-frontend.onrender.com
+      - key: JWT_SECRET
+        fromSecret: jwt_secret
+    healthCheckPath: /health
+
+  # React Frontend
+  - type: web
+    name: mbc-frontend
+    runtime: static
+    buildCommand: "npm install && npm run build"
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://mbc-backend.onrender.com
+      - key: VITE_AI_API_URL
+        value: https://mbc-ai-service.onrender.com
+
+# MongoDB Database
+databases:
+  - name: mbc-db
+    databaseName: mbc_dept_mgmt
+    user: mbc_user
+    plan: starter
+
+# Environment Groups
+envVarGroups:
+  - name: common-env
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: LOG_LEVEL
+        value: info
