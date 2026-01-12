@@ -1,0 +1,19 @@
+# This file is used to define the owners of files in this repository.
+# It allows us to automatically assign reviewers to pull requests.
+
+# Global owners
+* @Aisenh037
+
+# Backend
+/mbc-backend/ @Aisenh037
+
+# Frontend
+/mbc-frontend/ @Aisenh037
+
+# AI Service
+/ai-service/ @Aisenh037
+
+# Infrastructure
+/docker-compose.yml @Aisenh037
+/nginx/ @Aisenh037
+/.github/ @Aisenh037
