@@ -29,17 +29,17 @@ async function createAdminUser() {
   try {
     // 1. Create user in Supabase Auth
     console.log('Creating user in Supabase Auth...');
-    
+
     // Check if user already exists
-    const { data: existingUsers } = await supabase.auth.admin.listUsers();
-    const existingUser = existingUsers.users?.find(u => u.email === email);
+    const { data: { users }, error: listError } = await supabase.auth.admin.listUsers();
+    const existingUser = users?.find((u: any) => u.email === email);
 
     let authUserId: string;
 
     if (existingUser) {
       console.log('ℹ️ User already exists in Auth, updating password...');
       authUserId = existingUser.id;
-      
+
       // Update password
       const { error: updateError } = await supabase.auth.admin.updateUserById(authUserId, {
         password: password,

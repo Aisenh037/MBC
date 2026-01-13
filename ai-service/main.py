@@ -17,25 +17,57 @@ from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, mean_squared_error, r2_score, classification_report
-from textblob import TextBlob
-from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-import nltk
 import httpx
 import json
 import io
 import uuid
 from pathlib import Path
 
-# Download NLTK data
-try:
-    nltk.data.find('tokenizers/punkt')
-except LookupError:
-    nltk.download('punkt')
+# Global flag for NLTK availability
+NLTK_AVAILABLE = False
+TEXTBLOB_AVAILABLE = False
 
-try:
-    nltk.data.find('tokenizers/stopwords')
-except LookupError:
-    nltk.download('stopwords')
+def ensure_nltk_data():
+    """Lazy load NLTK data only when needed"""
+    global NLTK_AVAILABLE
+    if not NLTK_AVAILABLE:
+        try:
+            import nltk
+            # Try to find existing data first
+            try:
+                nltk.data.find('tokenizers/punkt')
+                nltk.data.find('corpora/stopwords')
+                NLTK_AVAILABLE = True
+                logger.info("NLTK data already available")
+            except LookupError:
+                # Download in background, don't block startup
+                logger.warning("NLTK data not found, downloading in background...")
+                try:
+                    nltk.download('punkt', quiet=True)
+                    nltk.download('stopwords', quiet=True)
+                    NLTK_AVAILABLE = True
+                    logger.info("NLTK data downloaded successfully")
+                except Exception as e:
+                    logger.warning(f"Failed to download NLTK data: {e}")
+                    NLTK_AVAILABLE = False
+        except ImportError:
+            logger.warning("NLTK not installed")
+            NLTK_AVAILABLE = False
+    return NLTK_AVAILABLE
+
+def get_sentiment_analyzer():
+    """Lazy load sentiment analysis tools"""
+    global TEXTBLOB_AVAILABLE
+    try:
+        from textblob import TextBlob
+        from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+        TEXTBLOB_AVAILABLE = True
+        return TextBlob, SentimentIntensityAnalyzer()
+    except ImportError as e:
+        logger.warning(f"Sentiment analysis libraries not available: {e}")
+        TEXTBLOB_AVAILABLE = False
+        return None, None
+
 
 # Load environment variables
 load_dotenv()

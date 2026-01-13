@@ -55,21 +55,8 @@ async function main() {
     }
   });
 
-  // WAIT. I need to know where password is stored.
-  // Schema in Step 49:
-  // model User { ... }
-  // No password field.
-  // There is NO local password storage in User model.
-  // This implies the system relies entirely on Supabase Auth OR there is a separate Auth/Account table.
-  // Scanning schema...
-  // User, Institution, Branch, Course, Enrollment, Assignment, Submission, Attendance, Notice, SystemConfig, AuditLog, FileUpload.
-  // No "Account" or "Auth" table.
-  // Conclusion: Auth is offloaded to Supabase OR schema is incomplete OR I am blind.
-  // However, "mbc-backend" package.json has "bcryptjs".
-  // If I cannot find a password column, I cannot seed a loginable user via Prisma unless I use Supabase Admin API.
-  // BUT the user reported 404 on /api/v1/auth/login.
-  // This endpoint likely handles login.
-  // I should check `src/controllers/auth.controller.ts` (if it exists) to see how it authenticates.
+  console.log('✅ Admin user created:', admin.email);
+  console.log('ℹ️  Note: Use Supabase Auth to set password for this user');
 }
 
 main()
