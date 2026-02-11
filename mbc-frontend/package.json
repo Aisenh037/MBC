@@ -22,7 +22,7 @@
     "@mui/x-data-grid": "^7.29.9",
     "@tanstack/react-query": "^5.0.0",
     "@tanstack/react-query-devtools": "^5.84.2",
-    "axios": "^1.10.0",
+    "axios": "^1.13.5",
     "date-fns": "^4.1.0",
     "detect-port": "^2.1.0",
     "eslint-plugin-react": "^7.37.5",
